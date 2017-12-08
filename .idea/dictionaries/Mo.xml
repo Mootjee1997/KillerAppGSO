@@ -2,8 +2,14 @@
   <dictionary name="Mo">
     <words>
       <w>attributen</w>
+      <w>boek</w>
+      <w>gebruiker</w>
+      <w>gebruikersnaam</w>
       <w>raadjeniet</w>
+      <w>registreer</w>
+      <w>uitgever</w>
       <w>voor</w>
+      <w>wachtwoord</w>
     </words>
   </dictionary>
 </component>

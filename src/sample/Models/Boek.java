@@ -32,14 +32,12 @@ public class Boek {
         this.uitgever = uitgever;
     }
     //Constructor voor het ophalen van een boek uit de database
-    public Boek(int id, String titel, String descriptie, int aantalBeschikbaar, int aantalExemplaren, Auteur auteur, Uitgever uitgever){
+    public Boek(int id, String titel, String descriptie, int aantalBeschikbaar, int aantalExemplaren){
         this.id = id;
         this.titel = titel;
         this.descriptie = descriptie;
         this.aantalBeschikbaar = aantalBeschikbaar;
         this.aantalExemplaren = aantalExemplaren;
-        this.auteur = auteur;
-        this.uitgever = uitgever;
     }
 
     public boolean leenUit(Gebruiker gebruiker) throws Exception {

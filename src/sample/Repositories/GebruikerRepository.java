@@ -13,7 +13,11 @@ public class GebruikerRepository {
         return context.login(gebruikernaam, wachtwoord);
     }
 
-    public Gebruiker registreer(Gebruiker gebruiker) throws Exception {
+    public int registreer(Gebruiker gebruiker) throws Exception {
         return context.registreer(gebruiker);
+    }
+
+    public boolean wijzigGegevens(Gebruiker gebruiker) throws Exception {
+        return context.wijzigGegevens(gebruiker);
     }
 }

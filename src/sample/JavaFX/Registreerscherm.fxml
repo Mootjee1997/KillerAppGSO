@@ -8,19 +8,19 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.GebruikerController">
    <children>
-      <Button fx:id="btnRegistreer" layoutX="367.0" layoutY="521.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="276.0" style="-fx-background-color: #ed9923;" text="Registreer">
+      <Button fx:id="btnRegistreer" layoutX="367.0" layoutY="521.0" mnemonicParsing="false" onAction="#registreer" prefHeight="44.0" prefWidth="276.0" style="-fx-background-color: #ed9923;" text="Registreer">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <TextField fx:id="btnGebruikersnaam" layoutX="308.0" layoutY="250.0" prefHeight="31.0" prefWidth="394.0" promptText="Gebruikersnaam">
+      <TextField fx:id="tbGebruikersnaamR" layoutX="308.0" layoutY="250.0" prefHeight="31.0" prefWidth="394.0" promptText="Gebruikersnaam">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="btnWachtwoord" layoutX="308.0" layoutY="294.0" prefHeight="31.0" prefWidth="394.0" promptText="Wachtwoord">
+      <TextField fx:id="tbWachtwoordR" layoutX="308.0" layoutY="294.0" prefHeight="31.0" prefWidth="394.0" promptText="Wachtwoord">
          <effect>
             <Glow />
          </effect>
@@ -32,32 +32,32 @@
             <Image url="@Logo.png" />
          </image>
       </ImageView>
-      <Label layoutX="309.0" layoutY="219.0" prefHeight="21.0" prefWidth="394.0" text="Vul uw gegevens in aub." textAlignment="CENTER" />
-      <TextField fx:id="btnGebruikersnaam1" layoutX="308.0" layoutY="337.0" prefHeight="31.0" prefWidth="394.0" promptText="Naam">
+      <Label fx:id="lblmessageR" layoutX="309.0" layoutY="219.0" prefHeight="21.0" prefWidth="394.0" text="Vul uw gegevens in aub." textAlignment="CENTER" />
+      <TextField fx:id="tbNaamR" layoutX="308.0" layoutY="337.0" prefHeight="31.0" prefWidth="394.0" promptText="Naam">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="btnWachtwoord1" layoutX="308.0" layoutY="381.0" prefHeight="31.0" prefWidth="394.0" promptText="Woonplaats">
+      <TextField fx:id="tbWoonplaatsR" layoutX="308.0" layoutY="381.0" prefHeight="31.0" prefWidth="394.0" promptText="Woonplaats">
          <effect>
             <Glow />
          </effect>
       </TextField>
       <Label layoutX="211.0" layoutY="386.0" text="Woonplaats:" />
       <Label layoutX="252.0" layoutY="342.0" text="Naam:" />
-      <TextField fx:id="btnGebruikersnaam2" layoutX="308.0" layoutY="425.0" prefHeight="31.0" prefWidth="394.0" promptText="Bijv.: Voorbeeld@domain.nl">
+      <TextField fx:id="tbEmailR" layoutX="308.0" layoutY="425.0" prefHeight="31.0" prefWidth="394.0" promptText="Bijv.: Voorbeeld@domain.nl">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="btnWachtwoord2" layoutX="308.0" layoutY="469.0" prefHeight="31.0" prefWidth="394.0" promptText="Bijv.: 0612345678">
+      <TextField fx:id="tbTelefoonNrR" layoutX="308.0" layoutY="469.0" prefHeight="31.0" prefWidth="394.0" promptText="Bijv.: 0612345678">
          <effect>
             <Glow />
          </effect>
       </TextField>
       <Label layoutX="175.0" layoutY="474.0" text="Telefoonnummer:" />
       <Label layoutX="254.0" layoutY="430.0" text="Email:" />
-      <Button fx:id="btnReturn" layoutX="401.0" layoutY="577.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="215.0" style="-fx-background-color: #b1ceb1;" text="&lt;&lt; Terug naar hoofdscherm">
+      <Button fx:id="btnReturn" layoutX="401.0" layoutY="577.0" mnemonicParsing="false" onAction="#openReturnScherm" prefHeight="44.0" prefWidth="215.0" style="-fx-background-color: #b1ceb1;" text="&lt;&lt; Terug naar hoofdscherm">
          <effect>
             <Glow />
          </effect>

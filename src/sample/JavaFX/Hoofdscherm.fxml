@@ -10,7 +10,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.GebruikerController">
    <children>
-      <Button fx:id="btnRegistreer" layoutX="370.0" layoutY="522.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="276.0" text="Registreer">
+      <Button fx:id="btnOpenRegistreerScherm" layoutX="370.0" layoutY="522.0" mnemonicParsing="false" onAction="#openregistreerScherm" prefHeight="44.0" prefWidth="276.0" text="Registreer">
          <effect>
             <Glow />
          </effect>
@@ -21,12 +21,12 @@
          </effect>
       </Button>
       <Label layoutX="367.0" layoutY="488.0" text="Nog geen account? Registreer je nu gratis!" />
-      <TextField fx:id="btnGebruikersnaam" layoutX="310.0" layoutY="280.0" prefHeight="31.0" prefWidth="394.0" promptText="Gebruikersnaam">
+      <TextField fx:id="tbGebruikersnaam" layoutX="310.0" layoutY="280.0" prefHeight="31.0" prefWidth="394.0" promptText="Gebruikersnaam">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="btnWachtwoord" layoutX="310.0" layoutY="324.0" prefHeight="31.0" prefWidth="394.0" promptText="Wachtwoord">
+      <TextField fx:id="tbWachtwoord" layoutX="310.0" layoutY="324.0" prefHeight="31.0" prefWidth="394.0" promptText="Wachtwoord">
          <effect>
             <Glow />
          </effect>
@@ -38,6 +38,6 @@
             <Image url="@Logo.png" />
          </image>
       </ImageView>
-      <Label layoutX="311.0" layoutY="249.0" prefHeight="21.0" prefWidth="394.0" text="Vul uw gegevens in aub." textAlignment="CENTER" />
+      <Label fx:id="lblmessage" layoutX="311.0" layoutY="249.0" prefHeight="21.0" prefWidth="394.0" text="Vul uw gegevens in aub." textAlignment="CENTER" />
    </children>
 </Pane>

@@ -9,12 +9,12 @@ import java.util.ArrayList;
 
 public class AppManager {
     private static Gebruiker gebruiker;
-    private static GebruikerRepository gebruikerRepository;
-    private static BoekRepository boekRepository;
-    private ArrayList<Gebruiker> gebruikers;
-    private ArrayList<Boek> boeken;
+    private static ArrayList<Gebruiker> gebruikers = new ArrayList<>();
+    private static ArrayList<Boek> boeken = new ArrayList<>();
+    public static GebruikerRepository gebruikerRepository = new GebruikerRepository(new IGebruikerContext());
+    public static BoekRepository boekRepository = new BoekRepository(new IBoekContext());
 
-    public Gebruiker getGebruiker() {
+    public static Gebruiker getGebruiker() {
         return gebruiker;
     }
 
@@ -29,8 +29,8 @@ public class AppManager {
         return gebruiker = gebruikerRepository.login(gebruikernaam, wachtwoord);
     }
 
-    public boolean registreer(Gebruiker gebruiker) throws  Exception {
-        return this.gebruikers.add(gebruikerRepository.registreer(gebruiker));
+    public static void registreer(Gebruiker gebruiker) throws  Exception {
+        gebruiker.setId(gebruikerRepository.registreer(gebruiker));
     }
 
     public Gebruiker zoekGebruiker(String gebruikernaam){
@@ -52,7 +52,7 @@ public class AppManager {
         return this.boeken.add(boekRepository.addBoek(boek));
     }
 
-    public void loguit(){
-        this.gebruiker = null;
+    public static void loguit(){
+        gebruiker = null;
     }
 }
