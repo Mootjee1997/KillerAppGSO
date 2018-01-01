@@ -11,19 +11,22 @@ import javafx.stage.Stage;
 import sample.Core.AppManager;
 import javafx.event.ActionEvent;
 import sample.Models.Gebruiker;
+import sample.Models.Gegevens;
 
 public class GebruikerController {
     Parent scherm;
-    @FXML private Label lblmessage, lblmessageR, lblmessageP;
+    AppManager appManager = AppManager.getInstance();
+    @FXML private Label lblmessage, lblmessageR, lblmessageP, lblIngelogdAls;
     @FXML private TextField tbGebruikersnaam, tbWachtwoord, tbWachtwoordP,tbNaamP,tbWoonplaatsP, tbEmailP, tbTelefoonNrP, tbGebruikersnaamR, tbWachtwoordR, tbNaamR,tbWoonplaatsR, tbEmailR, tbTelefoonNrR;
 
     public boolean loginUser(String gebruikersnaam, String wachtwoord) throws Exception {
-        if (AppManager.login(gebruikersnaam, wachtwoord).getStatus().equals("Medewerker")) {
-            scherm = FXMLLoader.load(getClass().getResource("Gebruikersscherm (Medewerker).fxml"));
+        if (appManager.login(gebruikersnaam, wachtwoord) != null)
+        if (appManager.getGebruiker().getStatus().equals("Medewerker")) {
+            scherm = FXMLLoader.load(getClass().getResource("MijnProfiel (Medewerker).fxml"));
             return true;
         }
-        else if (AppManager.login(gebruikersnaam, wachtwoord).getStatus().equals("Klant")) {
-            scherm = FXMLLoader.load(getClass().getResource("Gebruikersscherm (Klant).fxml"));
+        else if (appManager.getGebruiker().getStatus().equals("Klant")) {
+            scherm = FXMLLoader.load(getClass().getResource("MijnProfiel (Klant).fxml"));
             return true;
         }
         return false;
@@ -36,13 +39,15 @@ public class GebruikerController {
         stage.show();
     }
 
-    @FXML
-    public void initialize() {
-        if (tbNaamP != null && tbWoonplaatsP != null && tbEmailP != null && tbTelefoonNrP != null) {
-            tbNaamP.setText(AppManager.getGebruiker().getNaam());
-            tbWoonplaatsP.setText(AppManager.getGebruiker().getWoonplaats());
-            tbEmailP.setText(AppManager.getGebruiker().getEmail());
-            tbTelefoonNrP.setText(AppManager.getGebruiker().getTelefoonNr());
+    @FXML public void initialize() throws Exception {
+        appManager.getBoeken();
+        appManager.getGebruiker();
+        if (tbNaamP != null && tbWoonplaatsP != null && tbEmailP != null && tbTelefoonNrP != null && lblmessageP != null) {
+            tbNaamP.setText(appManager.getGebruiker().getGegevens().getNaam());
+            tbWoonplaatsP.setText(appManager.getGebruiker().getGegevens().getWoonplaats());
+            tbEmailP.setText(appManager.getGebruiker().getGegevens().getEmail());
+            tbTelefoonNrP.setText(appManager.getGebruiker().getGegevens().getTelefoonNr());
+            lblIngelogdAls.setText("Ingelogd als: " + appManager.getGebruiker().getGebruikersnaam());
         }
     }
 
@@ -64,7 +69,7 @@ public class GebruikerController {
 
     @FXML public void registreer(ActionEvent e) throws Exception {
         if (!tbGebruikersnaamR.getText().trim().equals("") && !tbWachtwoordR.getText().trim().equals("") && !tbNaamR.getText().trim().equals("") && !tbWoonplaatsR.getText().trim().equals("")) {
-            AppManager.registreer(new Gebruiker(tbGebruikersnaamR.getText(), tbWachtwoordR.getText(), tbNaamR.getText(), tbEmailR.getText(), tbWoonplaatsR.getText(), tbTelefoonNrR.getText()));
+            appManager.registreer(new Gebruiker(tbGebruikersnaamR.getText(), tbWachtwoordR.getText(), new Gegevens(tbNaamR.getText(), tbEmailR.getText(), tbWoonplaatsR.getText(), tbTelefoonNrR.getText())));
             loginUser(tbGebruikersnaamR.getText(), tbWachtwoordR.getText());
             showWindow(e);
         }
@@ -76,7 +81,7 @@ public class GebruikerController {
 
     @FXML public void wijzigProfiel(ActionEvent e) throws Exception {
         if (!tbWachtwoordP.getText().trim().equals("") && !tbNaamP.getText().trim().equals("") && !tbEmailP.getText().trim().equals("")) {
-            if (AppManager.getGebruiker().wijzigGegevens(tbWachtwoordP.getText(), tbNaamP.getText(), tbEmailP.getText(), tbWoonplaatsP.getText(), tbTelefoonNrP.getText())) {
+            if (appManager.getGebruiker().wijzigGegevens(tbWachtwoordP.getText(), new Gegevens(tbNaamP.getText(), tbEmailP.getText(), tbWoonplaatsP.getText(), tbTelefoonNrP.getText()))) {
                 lblmessageP.setTextFill(Color.GREEN);
                 lblmessageP.setText("Gegevens succesvol gewijzigd");
             }
@@ -88,7 +93,7 @@ public class GebruikerController {
     }
 
     @FXML public void loguit(ActionEvent e) throws Exception {
-        AppManager.loguit();
+        appManager.loguit();
         scherm = FXMLLoader.load(getClass().getResource("Hoofdscherm.fxml"));
         showWindow(e);
     }
@@ -101,5 +106,13 @@ public class GebruikerController {
     @FXML public void openReturnScherm(ActionEvent e) throws Exception {
         scherm = FXMLLoader.load(getClass().getResource("Hoofdscherm.fxml"));
         showWindow(e);
+    }
+
+    @FXML public void openMijnBoeken(ActionEvent e) throws Exception {
+        scherm = FXMLLoader.load(getClass().getResource("MijnBoeken (Klant).fxml"));
+        showWindow(e);
+    }
+
+    public GebruikerController() throws Exception {
     }
 }

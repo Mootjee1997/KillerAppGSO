@@ -24,12 +24,12 @@
             <Image url="@Logo.png" />
          </image>
       </ImageView>
-      <Button fx:id="btnMijnProfiel" layoutX="25.0" layoutY="140.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Mijn profiel">
+      <Button fx:id="btnMijnProfiel" layoutX="25.0" layoutY="141.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Mijn profiel">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <Button fx:id="btnGebruikerslijst" layoutX="25.0" layoutY="247.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Gebruikerslijst">
+      <Button fx:id="btnMijnBoeken" layoutX="25.0" layoutY="248.0" mnemonicParsing="false" onAction="#openMijnBoeken" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Mijn boeken">
          <effect>
             <Glow />
          </effect>
@@ -40,8 +40,8 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="665.0" prefWidth="4.0" style="-fx-background-color: #c6bcab;" />
         </items>
       </SplitPane>
-      <ListView layoutX="282.0" layoutY="21.0" prefHeight="638.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
-      <Label layoutX="536.0" layoutY="83.0" text="Mijn profiel">
+      <ListView layoutX="282.0" layoutY="30.0" prefHeight="613.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
+      <Label layoutX="535.0" layoutY="54.0" text="Mijn profiel">
          <font>
             <Font size="40.0" />
          </font>
@@ -81,11 +81,12 @@
             <Glow />
          </effect>
       </Button>
-      <Button fx:id="btnGebruikerslijst1" layoutX="25.0" layoutY="193.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Boekenlijst">
+      <Button fx:id="btnBoekenlijst" layoutX="25.0" layoutY="194.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Boekenlijst">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <Label fx:id="lblmessageP" layoutX="469.0" layoutY="174.0" text="Wijzig gegevens." />
+      <Label fx:id="lblmessageP" layoutX="469.0" layoutY="175.0" />
+      <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="576.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
    </children>
 </Pane>

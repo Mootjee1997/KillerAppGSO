@@ -32,7 +32,7 @@
             <Image url="@Logo.png" />
          </image>
       </ImageView>
-      <Label fx:id="lblmessageR" layoutX="309.0" layoutY="219.0" prefHeight="21.0" prefWidth="394.0" text="Vul uw gegevens in aub." textAlignment="CENTER" />
+      <Label fx:id="lblmessageR" layoutX="309.0" layoutY="219.0" prefHeight="21.0" prefWidth="394.0" textAlignment="CENTER" />
       <TextField fx:id="tbNaamR" layoutX="308.0" layoutY="337.0" prefHeight="31.0" prefWidth="394.0" promptText="Naam">
          <effect>
             <Glow />

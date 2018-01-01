@@ -1,8 +1,14 @@
 package sample.Models;
+import java.io.Serializable;
 
-public class Uitgever extends BoekSuppliers {
+public class Uitgever implements Serializable {
+    private Gegevens gegevens;
 
-    public Uitgever (int id, String naam, String email, String telefoonNr) {
-        super(id, naam, email, telefoonNr);
+    public Gegevens getGegevens() {
+        return gegevens;
+    }
+
+    public Uitgever(Gegevens gegevens){
+        this.gegevens = gegevens;
     }
 }

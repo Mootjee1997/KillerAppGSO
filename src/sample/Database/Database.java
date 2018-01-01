@@ -1,9 +1,7 @@
 package sample.Database;
-import sample.Models.Gebruiker;
 import java.sql.*;
 
 public class Database {
-    private String query;
     private PreparedStatement ps;
     private Connection conn;
     private ResultSet rs;
@@ -29,21 +27,6 @@ public class Database {
         return null;
     }
 
-    public int registreer(PreparedStatement ps, PreparedStatement ps1) throws SQLException {
-        try {
-            getConnection();
-            ps.executeUpdate();
-            rs = ps1.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("ID");
-            }
-        }
-        catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        }
-        return -1;
-    }
-
     public boolean update(PreparedStatement ps) throws SQLException {
         try {
             getConnection();
@@ -54,5 +37,19 @@ public class Database {
             System.out.println("Error: " + ex);
         }
         return false;
+    }
+
+    public int select(PreparedStatement ps) throws SQLException {
+        try {
+            getConnection();
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("ID");
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        }
+        return -1;
     }
 }
