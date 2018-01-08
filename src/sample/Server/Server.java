@@ -1,21 +1,25 @@
 package sample.Server;
+import fontys.RemotePublisher;
 import sample.Contexts.IBoekContext;
 import sample.Contexts.IGebruikerContext;
-import sample.Models.Boek;
-import sample.Models.BoekExemplaar;
-import sample.Models.Gebruiker;
+import sample.Models.*;
 import sample.Repositories.BoekRepository;
 import sample.Repositories.GebruikerRepository;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Server extends UnicastRemoteObject implements IServer {
     private int port = 1099;
     private Registry registry = null;
+    private RemotePublisher publisher;
+    private ArrayList<Auteur> auteurs;
+    private ArrayList<Uitgever> uitgevers;
     private ArrayList<Boek> boeken;
+    private ArrayList<BoekExemplaar> boekExemplaren;
     private ArrayList<Gebruiker> gebruikers;
     private BoekRepository boekRepository = new BoekRepository(new IBoekContext());
     private GebruikerRepository gebruikerRepository = new GebruikerRepository(new IGebruikerContext());
@@ -37,7 +41,6 @@ public class Server extends UnicastRemoteObject implements IServer {
             e.printStackTrace();
         }
     }
-
     public Registry createRegistry(){
         try {
             registry = LocateRegistry.createRegistry(port);
@@ -49,69 +52,81 @@ public class Server extends UnicastRemoteObject implements IServer {
         return registry;
     }
 
-    @Override
     public Gebruiker login(String gebruikernaam, String wachtwoord) throws Exception {
         return gebruikerRepository.login(gebruikernaam, wachtwoord);
     }
-
-    @Override
     public int registreer(Gebruiker gebruiker) throws Exception {
-        return gebruikerRepository.registreer(gebruiker);
+        gebruiker.setId(gebruikerRepository.registreer(gebruiker));
+        this.gebruikers.add(gebruiker);
+        return gebruiker.getId();
     }
 
-    @Override
-    public boolean addBoek(Boek boek) throws Exception {
-        return this.boeken.add(boekRepository.addBoek(boek));
-    }
-
-    @Override
-    public boolean leenUit(Boek boek, Gebruiker gebruiker) throws Exception {
-        BoekExemplaar boekExemplaar = boek.getExemplaar();
+    public boolean leenUit(int volgnummer, Boek boek, Gebruiker gebruiker) throws Exception {
+        BoekExemplaar boekExemplaar = zoekBoekExemplaar(volgnummer);
         zoekGebruiker(gebruiker.getGebruikersnaam()).addGeleendeBoek(boekExemplaar);
         return boekRepository.leenUit(boekExemplaar, gebruiker);
     }
-
-    @Override
     public boolean retourneer(BoekExemplaar boek, Gebruiker gebruiker) throws Exception {
-        boek.retourneer();
-        gebruiker.deleteGeleendeBoek(boek);
+        BoekExemplaar boekExemplaar = zoekBoekExemplaar(boek.getVolgnummer());
+        zoekGebruiker(gebruiker.getGebruikersnaam()).deleteGeleendeBoek(boekExemplaar);
         return boekRepository.retourneer(boek, gebruiker);
     }
 
-    public Gebruiker zoekGebruiker(String gebruikernaam) throws RemoteException {
-        for (Gebruiker g: gebruikers) {
-            if (g.getGebruikersnaam() == gebruikernaam) { return g; }
-        }
-        return null;
+    public boolean addAuteur(Auteur auteur) throws SQLException, ClassNotFoundException {
+        return boekRepository.addAuteur(auteur);
+    }
+    public boolean addUitgever(Uitgever uitgever) throws SQLException, ClassNotFoundException {
+        return boekRepository.addUitgever(uitgever);
+    }
+    public boolean addBoek(Boek boek) throws Exception {
+        for (BoekExemplaar boekExemplaar : boek.getBoekExemplaren()) { this.boekExemplaren.add(boekExemplaar); }
+        this.boeken.add(boek);
+        return this.boeken.add(boekRepository.addBoek(boek));
     }
 
     public Boek zoekBoek(String titel) throws RemoteException {
-        for (Boek b: boeken) {
-            if (b.getTitel() == titel) { return b; }
+        for (Boek b: boeken) { if (b.getTitel().equals(titel)) { return b; } }
+        return null;
+    }
+    public BoekExemplaar zoekBoekExemplaar(int volgnummer) throws RemoteException {
+        for (BoekExemplaar b : boekExemplaren) {
+            if (b.getVolgnummer() == volgnummer) {
+                return b;
+            }
         }
         return null;
     }
+    public Gebruiker zoekGebruiker(String gebruikernaam) throws RemoteException {
+        for (Gebruiker g: gebruikers) { if (g.getGebruikersnaam().equals(gebruikernaam)) { return g; } }
+        return null;
+    }
 
-    @Override
+    public ArrayList<Auteur> getAuteurs() throws Exception {
+        if (auteurs == null) { auteurs = boekRepository.getAuteurs(); }
+        return auteurs;
+    }
+    public ArrayList<Uitgever> getUitgevers() throws Exception {
+        if (uitgevers == null) { uitgevers = boekRepository.getUitgevers(); }
+        return uitgevers;
+    }
+    public ArrayList<Boek> getBoeken() throws Exception {
+        if (boeken == null){ boeken = boekRepository.getBoeken(); }
+        return boeken;
+    }
+    public ArrayList<BoekExemplaar> getBoekExemplaren() throws Exception {
+        if (boekExemplaren == null) { boekExemplaren = boekRepository.getBoekExemplaren(); }
+        return boekExemplaren;
+    }
+    public ArrayList<Gebruiker> getGebruikers() throws Exception {
+        if (gebruikers == null) { gebruikers = gebruikerRepository.getGebruikers(); }
+        return gebruikers;
+    }
+
     public boolean wijzigGegevens(Gebruiker gebruiker) throws Exception {
         return gebruikerRepository.wijzigGegevens(gebruiker);
     }
-
-    @Override
-    public ArrayList<Boek> getBoeken() throws Exception {
-        if (boeken == null){
-            boeken = boekRepository.getBoeken();
-            System.out.println("Booklist loaded from database and ready for use.");
-        }
-        return boeken;
-    }
-
-    @Override
-    public ArrayList<Gebruiker> getGebruikers() throws Exception {
-        if (gebruikers == null){
-            gebruikers = gebruikerRepository.getGebruikers();
-            System.out.println("Userlist loaded from database and ready for use.");
-        }
-        return gebruikers;
+    public boolean setBeschrijving(BoekExemplaar boekExemplaar) throws Exception {
+        zoekBoekExemplaar(boekExemplaar.getVolgnummer()).setBeschrijving(boekExemplaar.getBeschrijving());
+        return boekRepository.setBeschrijving(boekExemplaar);
     }
 }

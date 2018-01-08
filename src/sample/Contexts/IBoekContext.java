@@ -3,6 +3,7 @@ import sample.Database.Database;
 import sample.Models.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class IBoekContext {
@@ -29,15 +30,25 @@ public class IBoekContext {
         PreparedStatement ps = db.getConnection().prepareStatement(query);
         ps.setInt(1, gebruiker.getId());
         ps.setInt(2, boek.getId());
-        return db.update(ps);
+        db.update(ps);
+
+        query = "UPDATE BoekExemplaar SET Beschikbaar = FALSE WHERE ID = ?";
+        PreparedStatement ps1 = db.getConnection().prepareStatement(query);
+        ps1.setInt(1, boek.getId());
+        return db.update(ps1);
     }
 
     public boolean retourneer(BoekExemplaar boek, Gebruiker gebruiker) throws Exception {
-        query = "DELETE FROM `Gebruiker-Boekexemplaar` WHERE GebruikerID = ? && BoekID = ?";
+        query = "DELETE FROM `Gebruiker-Boekexemplaar` WHERE GebruikerID = ? AND BoekID = ?";
         PreparedStatement ps = db.getConnection().prepareStatement(query);
         ps.setInt(1, gebruiker.getId());
         ps.setInt(2, boek.getId());
-        return db.update(ps);
+        db.update(ps);
+
+        query = "UPDATE BoekExemplaar SET Beschikbaar = TRUE WHERE ID = ?";
+        PreparedStatement ps1 = db.getConnection().prepareStatement(query);
+        ps1.setInt(1, boek.getId());
+        return db.update(ps1);
     }
 
     public ArrayList<Boek> getBoeken() throws Exception {
@@ -61,7 +72,7 @@ public class IBoekContext {
             }
 
             ResultSet rs2;
-            query = "SELECT * FROM Auteur WHERE ID in (SELECT ID FROM `Auteur-Boek` WHERE BoekID = ?)";
+            query = "SELECT * FROM Auteur WHERE ID in (SELECT AuteurID FROM `Auteur-Boek` WHERE BoekID = ?)";
             PreparedStatement ps3 = db.getConnection().prepareStatement(query);
             ps3.setInt(1, boek.getId());
             rs2 = db.loadObject(ps3);
@@ -78,11 +89,83 @@ public class IBoekContext {
             rs3 = db.loadObject(ps4);
 
             while (rs3.next()) {
-                BoekExemplaar boekExemplaar = new BoekExemplaar(rs3.getInt("ID"), boek, rs3.getString("Beschrijving"), rs3.getBoolean("Beschikbaar"));
+                BoekExemplaar boekExemplaar = new BoekExemplaar(rs3.getInt("ID"), boek, rs3.getString("Beschrijving"), rs3.getBoolean("Beschikbaar"), rs3.getInt("Volgnummer"));
                 boek.setBoekExemplaren(boekExemplaar);
             }
             boeken.add(boek);
         }
         return boeken;
+    }
+
+    public ArrayList<Auteur> getAuteurs() throws SQLException, ClassNotFoundException {
+        query = "SELECT * FROM Auteur";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        rs = db.loadObject(ps);
+
+        ArrayList<Auteur> auteurs = new ArrayList<>();
+        while (rs.next()) {
+            Auteur auteur = new Auteur(new Gegevens(rs.getString("Naam"), rs.getString("Email"), rs.getString("Woonplaats"), rs.getString("TelefoonNr")));
+            auteurs.add(auteur);
+        }
+        return auteurs;
+    }
+
+    public ArrayList<Uitgever> getUitgevers() throws SQLException, ClassNotFoundException {
+        query = "SELECT * FROM Uitgever";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        rs = db.loadObject(ps);
+
+        ArrayList<Uitgever> uitgevers = new ArrayList<>();
+        while (rs.next()) {
+            Uitgever uitgever = new Uitgever(new Gegevens(rs.getString("Naam"), rs.getString("Email"), rs.getString("Woonplaats"), rs.getString("TelefoonNr")));
+            uitgevers.add(uitgever);
+        }
+        return uitgevers;
+    }
+
+    public boolean setBeschrijving(BoekExemplaar boekExemplaar) throws SQLException, ClassNotFoundException {
+        query = "UPDATE BoekExemplaar SET Beschrijving = ? WHERE ID = ?";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        ps.setString(1, boekExemplaar.getBeschrijving());
+        ps.setInt(2, boekExemplaar.getId());
+        return db.update(ps);
+    }
+
+    public ArrayList<BoekExemplaar> getBoekExemplaren() throws SQLException, ClassNotFoundException {
+        query = "SELECT * FROM BoekExemplaar";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        rs = db.loadObject(ps);
+
+        ArrayList<BoekExemplaar> boekExemplaren = new ArrayList<>();
+        while (rs.next()) {
+            BoekExemplaar boekExemplaar = new BoekExemplaar(rs.getInt("ID"), rs.getString("Beschrijving"), rs.getBoolean("Beschikbaar"), rs.getInt("Volgnummer"));
+
+            ResultSet rs1;
+            query = "SELECT * FROM Boek WHERE ID = (SELECT BoekID FROM BoekExemplaar WHERE ID = ?)";
+            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
+            ps1.setInt(1, boekExemplaar.getId());
+            rs1 = db.loadObject(ps1);
+
+            while (rs1.next()) {
+                Boek boek = new Boek(rs1.getInt("ID"), rs1.getString("Titel"), rs1.getString("Descriptie"));
+                boekExemplaar.setBoek(boek);
+            }
+            boekExemplaren.add(boekExemplaar);
+        }
+        return boekExemplaren;
+    }
+
+    public boolean addAuteur(Auteur auteur) throws SQLException, ClassNotFoundException {
+        query = "INSERT INTO Auteur (Naam) VALUES (?)";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        ps.setString(1, auteur.getGegevens().getNaam());
+        return db.update(ps);
+    }
+
+    public boolean addUitgever(Uitgever uitgever) throws SQLException, ClassNotFoundException {
+        query = "INSERT INTO Uitgever (Naam) VALUES (?)";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        ps.setString(1, uitgever.getGegevens().getNaam());
+        return db.update(ps);
     }
 }

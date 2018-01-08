@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Glow?>
@@ -12,9 +13,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.GebruikerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.GebruikerController">
    <children>
-      <Button fx:id="btnLoguit" layoutX="25.0" layoutY="607.0" mnemonicParsing="false" onAction="#loguit" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: Red;" text="Loguit" textFill="WHITE">
+      <Button fx:id="btnLoguit" layoutX="20.0" layoutY="607.0" mnemonicParsing="false" onAction="#loguit" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: Red;" text="Loguit" textFill="WHITE">
          <effect>
             <Glow />
          </effect>
@@ -24,12 +25,12 @@
             <Image url="@Logo.png" />
          </image>
       </ImageView>
-      <Button fx:id="btnMijnProfiel" layoutX="25.0" layoutY="141.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Mijn profiel">
+      <Button fx:id="btnMijnProfiel" layoutX="20.0" layoutY="141.0" mnemonicParsing="false" onAction="#openMijnProfiel" prefHeight="44.0" prefWidth="209.0" style="" text="Mijn profiel">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <Button fx:id="btnMijnBoeken" layoutX="25.0" layoutY="248.0" mnemonicParsing="false" onAction="#openMijnBoeken" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Mijn boeken">
+      <Button fx:id="btnMijnBoeken" layoutX="20.0" layoutY="247.0" mnemonicParsing="false" onAction="#openMijnBoeken" prefHeight="44.0" prefWidth="209.0" style="" text="Mijn boeken">
          <effect>
             <Glow />
          </effect>
@@ -41,52 +42,60 @@
         </items>
       </SplitPane>
       <ListView layoutX="282.0" layoutY="30.0" prefHeight="613.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
-      <Label layoutX="535.0" layoutY="54.0" text="Mijn profiel">
+      <Label layoutX="537.0" layoutY="46.0" text="Mijn profiel">
          <font>
             <Font size="40.0" />
          </font>
       </Label>
-      <TextField fx:id="tbNaamP" layoutX="468.0" layoutY="200.0" prefHeight="31.0" prefWidth="338.0" promptText="Mohamed Ali">
+      <TextField fx:id="tbNaam" layoutX="468.0" layoutY="200.0" prefHeight="31.0" prefWidth="338.0" promptText="Naam">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbTelefoonNrP" layoutX="469.0" layoutY="374.0" prefHeight="31.0" prefWidth="338.0" promptText="0643678439">
+      <TextField fx:id="tbTelefoonNr" layoutX="468.0" layoutY="375.0" prefHeight="31.0" prefWidth="338.0" promptText="Telefoonnummer">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbEmailP" layoutX="468.0" layoutY="333.0" prefHeight="31.0" prefWidth="338.0" promptText="Mootjee1997@gmail.com">
+      <TextField fx:id="tbEmail" layoutX="468.0" layoutY="331.0" prefHeight="31.0" prefWidth="338.0" promptText="Email">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbWachtwoordP" layoutX="467.0" layoutY="244.0" prefHeight="31.0" prefWidth="338.0" promptText="*********">
-         <effect>
-            <Glow />
-         </effect>
-      </TextField>
-      <TextField fx:id="tbWoonplaatsP" layoutX="468.0" layoutY="291.0" prefHeight="31.0" prefWidth="338.0" promptText="Eindhoven">
+      <TextField fx:id="tbWoonplaats" layoutX="468.0" layoutY="288.0" prefHeight="31.0" prefWidth="338.0" promptText="Woonplaats">
          <effect>
             <Glow />
          </effect>
       </TextField>
       <Label layoutX="415.0" layoutY="205.0" text="Naam:" />
       <Label layoutX="379.0" layoutY="379.0" text="TelefoonNr.:" />
-      <Label layoutX="418.0" layoutY="338.0" text="Email:" />
-      <Label layoutX="375.0" layoutY="300.0" text="Woonplaats:" />
+      <Label layoutX="417.0" layoutY="336.0" text="Email:" />
+      <Label layoutX="377.0" layoutY="293.0" text="Woonplaats:" />
       <Label layoutX="371.0" layoutY="249.0" text="Wachtwoord:" />
-      <Button fx:id="btnOpslaan" layoutX="533.0" layoutY="445.0" mnemonicParsing="false" onAction="#wijzigProfiel" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Wijzigingen opslaan">
+      <Button fx:id="btnOpslaan" layoutX="534.0" layoutY="462.0" mnemonicParsing="false" onAction="#wijzigProfiel" prefHeight="44.0" prefWidth="209.0" style="" text="Wijzigingen opslaan">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <Button fx:id="btnBoekenlijst" layoutX="25.0" layoutY="194.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Boekenlijst">
+      <Button fx:id="btnBoekenlijst" layoutX="20.0" layoutY="194.0" mnemonicParsing="false" onAction="#openBoekenLijst" prefHeight="44.0" prefWidth="209.0" style="" text="Boekenlijst">
          <effect>
             <Glow />
          </effect>
       </Button>
       <Label fx:id="lblmessageP" layoutX="469.0" layoutY="175.0" />
-      <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="576.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
+      <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
+      <PasswordField fx:id="tbWachtwoord" layoutX="468.0" layoutY="244.0" prefHeight="31.0" prefWidth="338.0" promptText="Nieuw wachtwoord" />
+      <Label layoutX="327.0" layoutY="423.0" text="Huidig wachtwoord:" />
+      <ImageView fitHeight="31.0" fitWidth="31.0" layoutX="819.0" layoutY="244.0" onMousePressed="#showPassword" onMouseReleased="#showPassword" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Eye.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="tbWachtwoordVisible" layoutX="468.0" layoutY="244.0" prefHeight="31.0" prefWidth="338.0" promptText="Nieuw wachtwoord" visible="false">
+         <effect>
+            <Glow />
+         </effect>
+      </TextField>
+      <PasswordField fx:id="tbPasswordVerif" layoutX="468.0" layoutY="418.0" prefHeight="31.0" prefWidth="338.0" promptText="Huidig wachtwoord ter bevestiging" />
    </children>
 </Pane>

@@ -19,10 +19,22 @@ public class IGebruikerContext {
         ps.setString(2, wachtwoord);
         rs = db.loadObject(ps);
 
+        Gebruiker gebruiker = null;
         if (rs.next()) {
-            return new Gebruiker(rs.getInt("ID"), rs.getString("Gebruikersnaam"), rs.getString("Wachtwoord"), rs.getString("Status"), new Gegevens(rs.getString("Naam"), rs.getString("Email"), rs.getString("Woonplaats"), rs.getString("TelefoonNr")));
+            gebruiker = new Gebruiker(rs.getInt("ID"), rs.getString("Gebruikersnaam"), rs.getString("Wachtwoord"), rs.getString("Status"), new Gegevens(rs.getString("Naam"), rs.getString("Email"), rs.getString("Woonplaats"), rs.getString("TelefoonNr")));
+
+            ResultSet rs1;
+            query = "SELECT * FROM BoekExemplaar WHERE ID IN (SELECT BoekID FROM `Gebruiker-BoekExemplaar` WHERE GebruikerID = ?)";
+            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
+            ps1.setInt(1, gebruiker.getId());
+            rs1 = db.loadObject(ps1);
+
+            while (rs1.next()) {
+                BoekExemplaar boekExemplaar = new BoekExemplaar(rs1.getInt("ID"), rs1.getString("Beschrijving"), rs1.getBoolean("Beschikbaar"), rs1.getInt("Volgnummer"));
+                gebruiker.addGeleendeBoek(boekExemplaar);
+            }
         }
-        return null;
+        return gebruiker;
     }
 
     public int registreer(Gebruiker gebruiker) throws Exception {
@@ -72,7 +84,7 @@ public class IGebruikerContext {
             rs2 = db.loadObject(ps2);
 
             while (rs2.next()) {
-                BoekExemplaar boekExemplaar = new BoekExemplaar(rs2.getInt("ID"), rs2.getString("Beschrijving"), rs2.getBoolean("Beschikbaar"));
+                BoekExemplaar boekExemplaar = new BoekExemplaar(rs2.getInt("ID"), rs2.getString("Beschrijving"), rs2.getBoolean("Beschikbaar"), rs2.getInt("Volgnummer"));
                 gebruiker.addGeleendeBoek(boekExemplaar);
             }
             gebruikers.add(gebruiker);

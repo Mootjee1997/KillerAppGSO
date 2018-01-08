@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.BoekController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.BoekController">
    <children>
-      <Button fx:id="btnLoguit" layoutX="25.0" layoutY="607.0" mnemonicParsing="false" onAction= prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: Red;" text="Loguit" textFill="WHITE">
+      <Button fx:id="btnLoguit" layoutX="20.0" layoutY="607.0" mnemonicParsing="false" onAction="#loguit" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: Red;" text="Loguit" textFill="WHITE">
          <effect>
             <Glow />
          </effect>
@@ -24,7 +24,7 @@
             <Image url="@Logo.png" />
          </image>
       </ImageView>
-      <Button fx:id="btnMijnProfiel" layoutX="25.0" layoutY="141.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style=" " text="Mijn profiel">
+      <Button layoutX="20.0" layoutY="141.0" mnemonicParsing="false" onAction="#openMijnProfiel" prefHeight="44.0" prefWidth="209.0" style=" " text="Mijn profiel">
          <effect>
             <Glow />
          </effect>
@@ -35,46 +35,74 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="665.0" prefWidth="4.0" style="-fx-background-color: #c6bcab;" />
         </items>
       </SplitPane>
-      <ListView layoutX="282.0" layoutY="30.0" prefHeight="619.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
+      <ListView layoutX="282.0" layoutY="30.0" prefHeight="613.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
       <Label layoutX="537.0" layoutY="46.0" text="Boekenlijst">
          <font>
             <Font size="40.0" />
          </font>
       </Label>
-      <Button fx:id="btnBoekenLijst" layoutX="25.0" layoutY="194.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Boekenlijst">
+      <Button layoutX="20.0" layoutY="194.0" mnemonicParsing="false" onAction="#openBoekenLijst" prefHeight="44.0" prefWidth="209.0" style="" text="Boekenlijst">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="574.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
-      <ListView fx:id="lsBoekenLijst" layoutX="309.0" layoutY="146.0" prefHeight="229.0" prefWidth="240.0" />
-      <Label layoutX="625.0" layoutY="243.0" text="Titel:" />
-      <TextField fx:id="titelBl" layoutX="675.0" layoutY="238.0" prefHeight="31.0" prefWidth="231.0" />
-      <Label layoutX="589.0" layoutY="275.0" text="Descriptie:" />
-      <TextField fx:id="descriptieBl" layoutX="675.0" layoutY="275.0" prefHeight="77.0" prefWidth="231.0" />
-      <Label layoutX="589.0" layoutY="365.0" text="Tot. aantal:" />
-      <TextField fx:id="totAantalBl" layoutX="675.0" layoutY="360.0" prefHeight="31.0" prefWidth="55.0" />
-      <Label layoutX="752.0" layoutY="365.0" text="Beschikbaar:" />
-      <TextField fx:id="beschikbaarBl" layoutX="851.0" layoutY="360.0" prefHeight="31.0" prefWidth="55.0" />
-      <Label layoutX="616.0" layoutY="406.0" text="Auteur:" />
-      <TextField fx:id="auteurBl" layoutX="675.0" layoutY="401.0" prefHeight="31.0" prefWidth="231.0" />
-      <Label layoutX="604.0" layoutY="447.0" text="Uitgever:" />
-      <TextField fx:id="uitgeverBl" layoutX="675.0" layoutY="442.0" prefHeight="31.0" prefWidth="231.0" />
-      <Label layoutX="675.0" layoutY="206.0" text="Boekinfo:">
+      <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
+      <ListView fx:id="lsBoekenLijst" layoutX="309.0" layoutY="172.0" onMouseClicked="#getBoekInfo" prefHeight="128.0" prefWidth="236.0" />
+      <Label layoutX="622.0" layoutY="180.0" text="Titel:" />
+      <TextField fx:id="tbTitel" layoutX="673.0" layoutY="175.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
+      <Label layoutX="587.0" layoutY="216.0" text="Descriptie:" />
+      <TextField fx:id="tbDescriptie" alignment="TOP_LEFT" layoutX="673.0" layoutY="212.0" prefHeight="82.0" prefWidth="288.0" promptText="Descriptie" />
+      <Label layoutX="584.0" layoutY="463.0" text="Tot. aantal:" />
+      <TextField fx:id="tbTotAantal" layoutX="674.0" layoutY="456.0" prefHeight="31.0" prefWidth="92.0" />
+      <Label layoutX="777.0" layoutY="463.0" text="Beschikbaar:" />
+      <TextField fx:id="tbBeschikbaar" layoutX="870.0" layoutY="456.0" prefHeight="31.0" prefWidth="92.0" />
+      <Label layoutX="607.0" layoutY="500.0" text="Auteur:" />
+      <TextField fx:id="tbAuteurs" layoutX="674.0" layoutY="495.0" prefHeight="31.0" prefWidth="288.0" promptText="Auteurs" />
+      <Label layoutX="597.0" layoutY="538.0" text="Uitgever:" />
+      <TextField fx:id="tbUitgever" layoutX="674.0" layoutY="533.0" prefHeight="31.0" prefWidth="288.0" promptText="Uitgever" />
+      <Label layoutX="674.0" layoutY="151.0" text="Boekinfo:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Button fx:id="btnGebruikerslijst" layoutX="25.0" layoutY="247.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Gebruikerslijst">
+      <Button layoutX="20.0" layoutY="300.0" mnemonicParsing="false" onAction="#openGebruikerslijst" prefHeight="44.0" prefWidth="209.0" style="" text="Gebruikerslijst">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <Button layoutX="675.0" layoutY="496.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: ;" text="Leen uit">
+      <Button fx:id="btnLeenUit" disable="true" layoutX="674.0" layoutY="574.0" mnemonicParsing="false" onAction="#leenUit" prefHeight="44.0" prefWidth="288.0" style="-fx-background-color: #46B57A;" text="Leen uit">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <ListView layoutX="309.0" layoutY="391.0" prefHeight="236.0" prefWidth="240.0" />
+      <ListView fx:id="lsGebruikersLijst" layoutX="309.0" layoutY="485.0" onMouseClicked="#enableBtnLeenUit" prefHeight="128.0" prefWidth="236.0" />
+      <Button layoutX="20.0" layoutY="247.0" mnemonicParsing="false" onAction="#openBoekToevoegen" prefHeight="44.0" prefWidth="209.0" style="" text="Boek toevoegen">
+         <effect>
+            <Glow />
+         </effect>
+      </Button>
+      <Label layoutX="309.0" layoutY="464.0" text="Lijst van gebruikers:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="309.0" layoutY="151.0" text="Lijst van boeken:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <ListView fx:id="lsBeschikbareExemplaren" layoutX="309.0" layoutY="330.0" onMouseClicked="#getBeschrijving" prefHeight="128.0" prefWidth="236.0" />
+      <Label layoutX="309.0" layoutY="309.0" text="Beschikbare exemplaren (volgnr):">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="tbBeschrijving" alignment="TOP_LEFT" layoutX="673.0" layoutY="300.0" prefHeight="82.0" prefWidth="288.0" promptText="Beschrijving" />
+      <Label layoutX="572.0" layoutY="299.0" text="Beschrijving:" />
+      <Button fx:id="btnBeschrijvingWijzigen" disable="true" layoutX="673.0" layoutY="389.0" mnemonicParsing="false" onAction="#beschrijvingWijzigen" prefHeight="44.0" prefWidth="288.0" style="-fx-background-color: Orange;" text="Beschrijving wijzigen">
+         <effect>
+            <Glow />
+         </effect>
+      </Button>
    </children>
 </Pane>

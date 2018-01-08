@@ -1,6 +1,5 @@
 package sample.Models;
 import sample.Core.AppManager;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -10,7 +9,6 @@ public class Gebruiker implements Serializable {
     private Gegevens gegevens;
     private ArrayList<BoekExemplaar> geleendeBoeken;
 
-    //Getters voor de attributen
     public int getId (){
         return this.id;
     }
@@ -22,16 +20,18 @@ public class Gebruiker implements Serializable {
     public Gegevens getGegevens() {
         return gegevens;
     }
-    public ArrayList<BoekExemplaar> getGeleendeBoeken() {
-        return geleendeBoeken;
+    public ArrayList<BoekExemplaar> getGeleendeBoeken() throws Exception {
+        ArrayList<BoekExemplaar> geleend = new ArrayList<>();
+        for (BoekExemplaar b : geleendeBoeken) {
+            geleend.add(AppManager.getInstance().zoekBoekExemplaar(b.getVolgnummer()));
+        }
+        return geleend;
     }
 
-    //Setters voor de attributen
     public void setId(int id) {
         this.id = id;
     }
 
-    //Constructor voor het aanmaken van een account zonder telefoonNr
     public Gebruiker(String gebruikersnaam, String wachtwoord, Gegevens gegevens){
         this.gebruikersnaam = gebruikersnaam;
         this.wachtwoord = wachtwoord;
@@ -40,7 +40,6 @@ public class Gebruiker implements Serializable {
         this.geleendeBoeken = new ArrayList<>();
     }
 
-    //Constructor voor het ophalen van een gebruiker uit de database
     public Gebruiker(int id, String gebruikersnaam, String wachtwoord, String status, Gegevens gegevens){
         this.id = id;
         this.gebruikersnaam = gebruikersnaam;
@@ -50,7 +49,6 @@ public class Gebruiker implements Serializable {
         this.geleendeBoeken = new ArrayList<>();
     }
 
-    //Methode voor het wijzigen van de accountgegevens
     public boolean wijzigGegevens (String wachtwoord, Gegevens gegevens) throws Exception {
         this.wachtwoord = wachtwoord;
         this.gegevens = gegevens;
@@ -58,10 +56,24 @@ public class Gebruiker implements Serializable {
     }
 
     public void addGeleendeBoek(BoekExemplaar boekExemplaar) {
+        boekExemplaar.setBeschikbaar(false);
         this.geleendeBoeken.add(boekExemplaar);
     }
 
     public void deleteGeleendeBoek(BoekExemplaar boekExemplaar) {
+        boekExemplaar.setBeschikbaar(true);
         this.geleendeBoeken.remove(boekExemplaar);
+    }
+
+    public BoekExemplaar getGeleendBoek(String titel) throws Exception {
+        for (BoekExemplaar boek : getGeleendeBoeken()) {
+            if (boek.getBoek().getTitel().equals(titel)) { return boek; }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return this.gebruikersnaam;
     }
 }
