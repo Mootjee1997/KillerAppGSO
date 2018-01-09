@@ -1,21 +1,29 @@
 package sample.Server;
 import sample.Models.*;
 import java.rmi.Remote;;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface IServer extends Remote {
     Gebruiker login(String gebruikersnaam, String wachtwoord) throws Exception;
     int registreer(Gebruiker gebruiker) throws Exception;
-    boolean addBoek(Boek boek) throws Exception;
-    boolean leenUit(int volgnummer, Boek boek, Gebruiker gebruiker) throws Exception;
+    void addBoek(Boek boek, String aantalExemplaren) throws Exception;
+    boolean leenUit(int volgnummer, Gebruiker gebruiker) throws Exception;
     boolean retourneer(BoekExemplaar boek, Gebruiker gebruiker) throws Exception;
     boolean wijzigGegevens(Gebruiker gebruiker) throws Exception;
     boolean setBeschrijving(BoekExemplaar boekExemplaar) throws Exception;
-    ArrayList<Auteur> getAuteurs() throws Exception;
-    ArrayList<Uitgever> getUitgevers() throws Exception;
-    ArrayList<Boek> getBoeken() throws Exception;
-    ArrayList<Gebruiker> getGebruikers() throws Exception;
-    ArrayList<BoekExemplaar> getBoekExemplaren() throws Exception;
+    ArrayList<String> getAuteurs() throws Exception;
+    ArrayList<String> getUitgevers() throws Exception;
+    ArrayList<String> getBoeken() throws Exception;
+    ArrayList<String> getGebruikers() throws Exception;
+    ArrayList<String> getBoekExemplaren() throws Exception;
     boolean addAuteur(Auteur auteur) throws Exception;
     boolean addUitgever(Uitgever uitgever) throws Exception;
+    ArrayList<String> getGeleendeBoeken(Gebruiker gebruiker) throws Exception;
+    Auteur zoekAuteur(String naam) throws Exception;
+    Uitgever zoekUitgever(String naam) throws Exception;
+    Boek zoekBoek(String titel) throws Exception;
+    BoekExemplaar zoekBoekExemplaar(int volgnummer) throws Exception;
+    Gebruiker zoekGebruiker(String gebruikernaam) throws Exception;
+    ArrayList<String> getBeschikbareExemplaren(String titel) throws Exception;
 }

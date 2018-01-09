@@ -19,11 +19,6 @@ public class AppManager implements IRemotePropertyListener {
     private IRemotePublisherForListener publisherForListener;
     private IServer server;
     private Gebruiker gebruiker;
-    private ArrayList<Auteur> auteurs;
-    private ArrayList<Uitgever> uitgevers;
-    private ArrayList<Boek> boeken;
-    private ArrayList<BoekExemplaar> boekExemplaren;
-    private ArrayList<Gebruiker> gebruikers;
 
     public AppManager() throws Exception {
         server = (IServer) Naming.lookup("rmi://localhost:1099/Server");
@@ -37,11 +32,10 @@ public class AppManager implements IRemotePropertyListener {
     }
     public void registreer(Gebruiker gebruiker) throws  Exception {
         gebruiker.setId(server.registreer(gebruiker));
-        gebruikers.add(gebruiker);
     }
 
-    public boolean leenUit(int volgnummer, Boek boek, Gebruiker gebruiker) throws Exception {
-        return server.leenUit(volgnummer, boek, gebruiker);
+    public boolean leenUit(int volgnummer, Gebruiker gebruiker) throws Exception {
+        return server.leenUit(volgnummer, gebruiker);
     }
     public boolean retourneer(BoekExemplaar boek, Gebruiker gebruiker) throws Exception {
         return server.retourneer(boek, gebruiker);
@@ -53,50 +47,46 @@ public class AppManager implements IRemotePropertyListener {
     public boolean addUitgever(Uitgever uitgever) throws Exception {
         return server.addUitgever(uitgever);
     }
-    public boolean addBoek(Boek boek) throws Exception {
-        return server.addBoek(boek);
+    public void addBoek(Boek boek, String aantalExemplaren) throws Exception {
+        server.addBoek(boek, aantalExemplaren);
     }
 
-    public Auteur zoekAuteur(String naam) {
-        for (Auteur a : auteurs) { if (a.getGegevens().getNaam().equals(naam)) { return a; } }
-        return null;
+    public Auteur zoekAuteur(String naam) throws Exception {
+        return server.zoekAuteur(naam);
     }
-    public Uitgever zoekUitgever(String naam) {
-        for (Uitgever u : uitgevers) { if (u.getGegevens().getNaam().equals(naam)) { return u; } }
-        return null;
+    public Uitgever zoekUitgever(String naam) throws Exception {
+        return server.zoekUitgever(naam);
     }
-    public Boek zoekBoek(String titel) throws RemoteException {
-        for (Boek b: boeken) { if (b.getTitel().equals(titel)) { return b; } }
-        return null;
+    public Boek zoekBoek(String titel) throws Exception {
+        return server.zoekBoek(titel);
     }
-    public BoekExemplaar zoekBoekExemplaar(int volgnummer) throws RemoteException {
-        for (BoekExemplaar b: boekExemplaren) { if (b.getVolgnummer() == volgnummer) { return b; } }
-        return null;
+    public BoekExemplaar zoekBoekExemplaar(int volgnummer) throws Exception {
+        return server.zoekBoekExemplaar(volgnummer);
     }
-    public Gebruiker zoekGebruiker(String gebruikernaam) throws RemoteException {
-        for (Gebruiker g: gebruikers) { if (g.getGebruikersnaam() == gebruikernaam) { return g; } }
-        return null;
+    public Gebruiker zoekGebruiker(String gebruikernaam) throws Exception {
+        return server.zoekGebruiker(gebruikernaam);
     }
 
-    public ArrayList<Auteur> getAuteurs() throws Exception {
-        if (auteurs == null) { auteurs = server.getAuteurs(); }
-        return auteurs;
+    public ArrayList<String> getAuteurs() throws Exception {
+        return server.getAuteurs();
     }
-    public ArrayList<Uitgever> getUitgevers() throws Exception {
-        if (uitgevers == null) { uitgevers = server.getUitgevers(); }
-        return uitgevers;
+    public ArrayList<String> getUitgevers() throws Exception {
+        return server.getUitgevers();
     }
-    public ArrayList<Boek> getBoeken() throws Exception {
-        if (boeken == null){ boeken = server.getBoeken(); }
-        return boeken;
+    public ArrayList<String> getBoeken() throws Exception {
+        return server.getBoeken();
     }
-    public ArrayList<BoekExemplaar> getBoekExemplaren() throws Exception {
-        if (boekExemplaren == null){ boekExemplaren = server.getBoekExemplaren(); }
-        return boekExemplaren;
+    public ArrayList<String> getBoekExemplaren() throws Exception {
+        return server.getBoekExemplaren();
     }
-    public ArrayList<Gebruiker> getGebruikers() throws Exception {
-        if (gebruikers == null){ gebruikers = server.getGebruikers(); }
-        return gebruikers;
+    public ArrayList<String> getGebruikers() throws Exception {
+        return server.getGebruikers();
+    }
+    public ArrayList<String> getGeleendeBoeken(Gebruiker gebruiker)throws Exception {
+        return server.getGeleendeBoeken(gebruiker);
+    }
+    public ArrayList<String> getBeschikbareExemplaren(String titel) throws Exception {
+        return server.getBeschikbareExemplaren(titel);
     }
 
     public void setBeschrijving(BoekExemplaar boekExemplaar) throws Exception {
@@ -113,7 +103,7 @@ public class AppManager implements IRemotePropertyListener {
         gebruiker = null;
     }
 
-    public void propertyChange(PropertyChangeEvent propertyChangeEvent) throws RemoteException {
+    public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
 
     }
 }

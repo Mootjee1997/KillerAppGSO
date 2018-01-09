@@ -1,5 +1,4 @@
 package sample.Models;
-import sample.Core.AppManager;
 import java.io.Serializable;
 
 public class BoekExemplaar implements Serializable {

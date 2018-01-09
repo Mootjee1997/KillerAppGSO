@@ -50,4 +50,8 @@ public class BoekRepository {
     public boolean addUitgever(Uitgever uitgever) throws SQLException, ClassNotFoundException {
         return context.addUitgever(uitgever);
     }
+
+    public int addBoekExemplaar(Boek boek, int volgnr) throws SQLException, ClassNotFoundException {
+        return context.addBoekExemplaar(boek, volgnr);
+    }
 }

@@ -4,6 +4,7 @@ import sample.Models.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class IBoekContext {
@@ -12,16 +13,27 @@ public class IBoekContext {
     private String query;
 
     public Boek addBoek(Boek boek) throws Exception {
-        query = "INSERT INTO Boek (UitgeverID, Titel, Descriptie) VALUES (?, ?, ?)";
-        PreparedStatement ps = db.getConnection().prepareStatement(query);
-        db.update(ps);
+        query = "INSERT INTO Boek (UitgeverID, Titel, Descriptie) VALUES ((SELECT ID FROM Uitgever WHERE Naam = ?), ?, ?)";
+        PreparedStatement ps = db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        ps.setString(1, boek.getUitgever().getGegevens().getNaam());
+        ps.setString(2, boek.getTitel());
+        ps.setString(3, boek.getDescriptie());
 
-        query = "SELECT ID FROM Boek WHERE Titel = ? AND Descriptie = ?";
-        PreparedStatement ps1 = db.getConnection().prepareStatement(query);
-        ps1.setString(1, boek.getTitel());
-        ps1.setString(2, boek.getDescriptie());
-        int id = db.select(ps1);
+        ps.execute();
+        rs = ps.getGeneratedKeys();
+        int id = 0;
+        if (rs.next()) {
+            id = rs.getInt(1);
+        }
         boek.setId(id);
+
+        for (Auteur auteur : boek.getAuteurs()) {
+            query = "INSERT INTO `Auteur-Boek` (AuteurID, BoekID) VALUES ((SELECT ID FROM Auteur WHERE Naam = ?), ?)";
+            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
+            ps1.setString(1, auteur.getGegevens().getNaam());
+            ps1.setInt(2, boek.getId());
+            db.update(ps1);
+        }
         return boek;
     }
 
@@ -167,5 +179,21 @@ public class IBoekContext {
         PreparedStatement ps = db.getConnection().prepareStatement(query);
         ps.setString(1, uitgever.getGegevens().getNaam());
         return db.update(ps);
+    }
+
+    public int addBoekExemplaar(Boek boek, int volgnr) throws SQLException, ClassNotFoundException {
+        query = "INSERT INTO BoekExemplaar (BoekID, Beschikbaar, Volgnummer) VALUES (?, ?, ?)";
+        PreparedStatement ps = db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        ps.setInt(1, boek.getId());
+        ps.setBoolean(2, true);
+        ps.setInt(3, volgnr);
+
+        ps.execute();
+        rs = ps.getGeneratedKeys();
+        int id = 0;
+        if (rs.next()) {
+            id = rs.getInt(1);
+        }
+        return id;
     }
 }

@@ -36,7 +36,7 @@
         </items>
       </SplitPane>
       <ListView layoutX="282.0" layoutY="30.0" prefHeight="613.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
-      <Label layoutX="537.0" layoutY="46.0" text="Boekenlijst">
+      <Label alignment="CENTER" layoutX="280.0" layoutY="46.0" prefHeight="58.0" prefWidth="712.0" text="Boekenlijst">
          <font>
             <Font size="40.0" />
          </font>
@@ -49,17 +49,17 @@
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
       <ListView fx:id="lsBoekenLijst" layoutX="309.0" layoutY="172.0" onMouseClicked="#getBoekInfo" prefHeight="128.0" prefWidth="236.0" />
       <Label layoutX="622.0" layoutY="180.0" text="Titel:" />
-      <TextField fx:id="tbTitel" layoutX="673.0" layoutY="175.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
+      <TextField fx:id="tbTitel" editable="false" layoutX="673.0" layoutY="175.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
       <Label layoutX="587.0" layoutY="216.0" text="Descriptie:" />
-      <TextField fx:id="tbDescriptie" alignment="TOP_LEFT" layoutX="673.0" layoutY="212.0" prefHeight="82.0" prefWidth="288.0" promptText="Descriptie" />
-      <Label layoutX="584.0" layoutY="463.0" text="Tot. aantal:" />
-      <TextField fx:id="tbTotAantal" layoutX="674.0" layoutY="456.0" prefHeight="31.0" prefWidth="92.0" />
-      <Label layoutX="777.0" layoutY="463.0" text="Beschikbaar:" />
-      <TextField fx:id="tbBeschikbaar" layoutX="870.0" layoutY="456.0" prefHeight="31.0" prefWidth="92.0" />
-      <Label layoutX="607.0" layoutY="500.0" text="Auteur:" />
-      <TextField fx:id="tbAuteurs" layoutX="674.0" layoutY="495.0" prefHeight="31.0" prefWidth="288.0" promptText="Auteurs" />
-      <Label layoutX="597.0" layoutY="538.0" text="Uitgever:" />
-      <TextField fx:id="tbUitgever" layoutX="674.0" layoutY="533.0" prefHeight="31.0" prefWidth="288.0" promptText="Uitgever" />
+      <TextField fx:id="tbDescriptie" alignment="TOP_LEFT" editable="false" layoutX="673.0" layoutY="212.0" prefHeight="82.0" prefWidth="288.0" promptText="Descriptie" />
+      <Label layoutX="583.0" layoutY="458.0" text="Tot. aantal:" />
+      <TextField fx:id="tbTotAantal" editable="false" layoutX="673.0" layoutY="451.0" prefHeight="31.0" prefWidth="92.0" />
+      <Label layoutX="776.0" layoutY="458.0" text="Beschikbaar:" />
+      <TextField fx:id="tbBeschikbaar" editable="false" layoutX="869.0" layoutY="451.0" prefHeight="31.0" prefWidth="92.0" />
+      <Label layoutX="606.0" layoutY="495.0" text="Auteur:" />
+      <TextField fx:id="tbAuteurs" editable="false" layoutX="673.0" layoutY="490.0" prefHeight="31.0" prefWidth="288.0" promptText="Auteurs" />
+      <Label layoutX="596.0" layoutY="533.0" text="Uitgever:" />
+      <TextField fx:id="tbUitgever" editable="false" layoutX="673.0" layoutY="528.0" prefHeight="31.0" prefWidth="288.0" promptText="Uitgever" />
       <Label layoutX="674.0" layoutY="151.0" text="Boekinfo:">
          <font>
             <Font name="System Bold" size="15.0" />
@@ -70,12 +70,12 @@
             <Glow />
          </effect>
       </Button>
-      <Button fx:id="btnLeenUit" disable="true" layoutX="674.0" layoutY="574.0" mnemonicParsing="false" onAction="#leenUit" prefHeight="44.0" prefWidth="288.0" style="-fx-background-color: #46B57A;" text="Leen uit">
+      <Button fx:id="btnLeenUit" layoutX="673.0" layoutY="569.0" mnemonicParsing="false" onAction="#leenUit" prefHeight="44.0" prefWidth="288.0" style="-fx-background-color: #46B57A;" text="Leen uit">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <ListView fx:id="lsGebruikersLijst" layoutX="309.0" layoutY="485.0" onMouseClicked="#enableBtnLeenUit" prefHeight="128.0" prefWidth="236.0" />
+      <ListView fx:id="lsGebruikersLijst" layoutX="309.0" layoutY="485.0" prefHeight="128.0" prefWidth="236.0" />
       <Button layoutX="20.0" layoutY="247.0" mnemonicParsing="false" onAction="#openBoekToevoegen" prefHeight="44.0" prefWidth="209.0" style="" text="Boek toevoegen">
          <effect>
             <Glow />
@@ -99,10 +99,14 @@
       </Label>
       <TextField fx:id="tbBeschrijving" alignment="TOP_LEFT" layoutX="673.0" layoutY="300.0" prefHeight="82.0" prefWidth="288.0" promptText="Beschrijving" />
       <Label layoutX="572.0" layoutY="299.0" text="Beschrijving:" />
-      <Button fx:id="btnBeschrijvingWijzigen" disable="true" layoutX="673.0" layoutY="389.0" mnemonicParsing="false" onAction="#beschrijvingWijzigen" prefHeight="44.0" prefWidth="288.0" style="-fx-background-color: Orange;" text="Beschrijving wijzigen">
+      <Button fx:id="btnBeschrijvingWijzigen" layoutX="673.0" layoutY="389.0" mnemonicParsing="false" onAction="#beschrijvingWijzigen" prefHeight="44.0" prefWidth="288.0" style="-fx-background-color: Orange;" text="Beschrijving wijzigen">
          <effect>
             <Glow />
          </effect>
       </Button>
+      <Label fx:id="lblMessageBL" alignment="CENTER" layoutX="306.0" layoutY="113.0" prefHeight="21.0" prefWidth="654.0" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Label>
    </children>
 </Pane>

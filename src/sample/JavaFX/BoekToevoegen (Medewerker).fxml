@@ -37,7 +37,7 @@
         </items>
       </SplitPane>
       <ListView layoutX="282.0" layoutY="30.0" prefHeight="613.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
-      <Label layoutX="495.0" layoutY="46.0" text="Boek toevoegen">
+      <Label alignment="CENTER" layoutX="282.0" layoutY="46.0" prefHeight="58.0" prefWidth="712.0" text="Boek toevoegen">
          <font>
             <Font size="40.0" />
          </font>
@@ -53,7 +53,7 @@
       <Label layoutX="408.0" layoutY="223.0" text="Descriptie:" />
       <TextField fx:id="tbDescriptie" alignment="TOP_LEFT" layoutX="497.0" layoutY="223.0" prefHeight="118.0" prefWidth="288.0" promptText="Descriptie" />
       <Label layoutX="410.0" layoutY="353.0" text="Tot. aantal:" />
-      <TextField fx:id="totAantal" layoutX="499.0" layoutY="348.0" prefHeight="31.0" prefWidth="288.0" promptText="Totaal aantal exemplaren" />
+      <TextField fx:id="tbTotAantal" layoutX="499.0" layoutY="348.0" prefHeight="31.0" prefWidth="288.0" promptText="Totaal aantal exemplaren" />
       <Label layoutX="434.0" layoutY="392.0" text="Auteur:" />
       <TextField fx:id="tbAuteurs" layoutX="499.0" layoutY="427.0" prefHeight="31.0" prefWidth="288.0" promptText="Andere auteur" />
       <Label layoutX="421.0" layoutY="471.0" text="Uitgever:" />
@@ -80,5 +80,9 @@
          </effect>
       </Button>
       <ComboBox fx:id="cbUitgever" layoutX="499.0" layoutY="466.0" onAction="#selecteerUitgever" prefHeight="31.0" prefWidth="288.0" promptText="Lijst van eerdere uitgevers" />
+      <Label fx:id="lblMessageBL" alignment="CENTER" layoutX="315.0" layoutY="131.0" prefHeight="21.0" prefWidth="652.0">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Label>
    </children>
 </Pane>

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.GebruikerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.GebruikerController">
    <children>
       <Button fx:id="btnLoguit" layoutX="20.0" layoutY="607.0" mnemonicParsing="false" onAction="#loguit" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: Red;" text="Loguit" textFill="WHITE">
          <effect>
@@ -42,7 +42,7 @@
         </items>
       </SplitPane>
       <ListView layoutX="282.0" layoutY="30.0" prefHeight="613.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
-      <Label layoutX="537.0" layoutY="46.0" text="Mijn profiel">
+      <Label alignment="CENTER" layoutX="282.0" layoutY="46.0" prefHeight="58.0" prefWidth="712.0" text="Mijn profiel">
          <font>
             <Font size="40.0" />
          </font>
@@ -72,7 +72,7 @@
       <Label layoutX="417.0" layoutY="336.0" text="Email:" />
       <Label layoutX="377.0" layoutY="293.0" text="Woonplaats:" />
       <Label layoutX="371.0" layoutY="249.0" text="Wachtwoord:" />
-      <Button fx:id="btnOpslaan" layoutX="534.0" layoutY="462.0" mnemonicParsing="false" onAction="#wijzigProfiel" prefHeight="44.0" prefWidth="209.0" style="" text="Wijzigingen opslaan">
+      <Button fx:id="btnProfielWijzigen" layoutX="534.0" layoutY="462.0" mnemonicParsing="false" onAction="#wijzigProfiel" prefHeight="44.0" prefWidth="209.0" style="" text="Wijzigingen opslaan">
          <effect>
             <Glow />
          </effect>
@@ -82,7 +82,10 @@
             <Glow />
          </effect>
       </Button>
-      <Label fx:id="lblmessageP" layoutX="469.0" layoutY="175.0" />
+      <Label fx:id="lblmessageP" alignment="CENTER" layoutX="308.0" layoutY="175.0" prefHeight="21.0" prefWidth="661.0">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Label>
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
       <PasswordField fx:id="tbWachtwoord" layoutX="468.0" layoutY="244.0" prefHeight="31.0" prefWidth="338.0" promptText="Nieuw wachtwoord" />
       <Label layoutX="327.0" layoutY="423.0" text="Huidig wachtwoord:" />

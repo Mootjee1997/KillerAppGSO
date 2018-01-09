@@ -1,4 +1,6 @@
 package sample.Models;
+import sample.Core.AppManager;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -16,8 +18,12 @@ public class Boek implements Serializable {
     public Uitgever getUitgever() {
         return uitgever;
     }
-    public ArrayList<BoekExemplaar> getBoekExemplaren() {
-        return boekExemplaren;
+    public ArrayList<BoekExemplaar> getBoekExemplaren() throws Exception {
+        ArrayList<BoekExemplaar> exemplaren = new ArrayList<>();
+        for (BoekExemplaar boek : boekExemplaren) {
+            exemplaren.add(AppManager.getInstance().zoekBoekExemplaar(boek.getVolgnummer()));
+        }
+        return exemplaren;
     }
 
     public void setId(int id) {
@@ -47,19 +53,9 @@ public class Boek implements Serializable {
         this.boekExemplaren = new ArrayList<>();
     }
 
-    public ArrayList<BoekExemplaar> getBeschikbareExemplaren() {
-        ArrayList<BoekExemplaar> beschikbaren = new ArrayList<>();
-        for (BoekExemplaar boek : boekExemplaren) {
-            if (boek.getBeschikbaar()) {
-                beschikbaren.add(boek);
-            }
-        }
-        return beschikbaren;
-    }
-
-    public int getAantalBeschikbaar(){
+    public int getAantalBeschikbaar() throws Exception {
         int i = 0;
-        for (BoekExemplaar boek : boekExemplaren) {
+        for (BoekExemplaar boek : getBoekExemplaren()) {
             if (boek.getBeschikbaar()) { i++; }
         }
         return i;

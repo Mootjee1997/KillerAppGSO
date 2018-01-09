@@ -41,27 +41,27 @@
         </items>
       </SplitPane>
       <ListView layoutX="282.0" layoutY="30.0" onMouseClicked="#getBeschrijving" prefHeight="613.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
-      <Label layoutX="537.0" layoutY="46.0" text="Gebruikerslijst">
+      <Label alignment="CENTER" layoutX="281.0" layoutY="46.0" prefHeight="58.0" prefWidth="712.0" text="Gebruikerslijst">
          <font>
             <Font size="40.0" />
          </font>
       </Label>
-      <TextField fx:id="tbNaam" editable="false" layoutX="684.0" layoutY="165.0" prefHeight="31.0" prefWidth="255.0" promptText="Naam">
+      <TextField fx:id="tbNaam" editable="false" layoutX="684.0" layoutY="165.0" prefHeight="31.0" prefWidth="279.0" promptText="Naam">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbTelefoonNr" editable="false" layoutX="684.0" layoutY="283.0" prefHeight="31.0" prefWidth="255.0" promptText="Telefoonnummer">
+      <TextField fx:id="tbTelefoonNr" editable="false" layoutX="684.0" layoutY="283.0" prefHeight="31.0" prefWidth="279.0" promptText="Telefoonnummer">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbEmail" editable="false" layoutX="684.0" layoutY="244.0" prefHeight="31.0" prefWidth="255.0" promptText="Email">
+      <TextField fx:id="tbEmail" editable="false" layoutX="684.0" layoutY="244.0" prefHeight="31.0" prefWidth="279.0" promptText="Email">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbWoonplaats" editable="false" layoutX="684.0" layoutY="205.0" prefHeight="31.0" prefWidth="255.0" promptText="Woonplaats">
+      <TextField fx:id="tbWoonplaats" editable="false" layoutX="684.0" layoutY="205.0" prefHeight="31.0" prefWidth="279.0" promptText="Woonplaats">
          <effect>
             <Glow />
          </effect>
@@ -99,12 +99,12 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Button fx:id="btnRetourneer" disable="true" layoutX="684.0" layoutY="575.0" mnemonicParsing="false" onAction="#retourneer" prefHeight="35.0" prefWidth="255.0" style="-fx-background-color: Red;" text="Retourneer" textFill="WHITE">
+      <Button fx:id="btnRetourneer" layoutX="684.0" layoutY="575.0" mnemonicParsing="false" onAction="#retourneer" prefHeight="35.0" prefWidth="279.0" style="-fx-background-color: Red;" text="Retourneer" textFill="WHITE">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <TextField fx:id="tbBeschrijving" alignment="TOP_LEFT" layoutX="684.0" layoutY="384.0" prefHeight="138.0" prefWidth="255.0" promptText="Beschrijving boekexemplaar">
+      <TextField fx:id="tbBeschrijving" alignment="TOP_LEFT" editable="false" layoutX="684.0" layoutY="384.0" prefHeight="181.0" prefWidth="279.0" promptText="Beschrijving boekexemplaar">
          <effect>
             <Glow />
          </effect>
@@ -115,15 +115,10 @@
          </font>
       </Label>
       <Label layoutX="582.0" layoutY="385.0" text="Beschrijving:" />
-      <Label fx:id="lblMessageGL" layoutX="309.0" layoutY="104.0" prefHeight="21.0" prefWidth="630.0">
+      <Label fx:id="lblMessageBL" alignment="CENTER" layoutX="309.0" layoutY="104.0" prefHeight="21.0" prefWidth="653.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Button fx:id="btnBeschrijvingWijzigen" disable="true" layoutX="684.0" layoutY="528.0" mnemonicParsing="false" onAction="#beschrijvingWijzigen" prefHeight="35.0" prefWidth="255.0" style="-fx-background-color: Orange;" text="Beschrijving wijzigen">
-         <effect>
-            <Glow />
-         </effect>
-      </Button>
    </children>
 </Pane>

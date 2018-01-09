@@ -2,7 +2,6 @@ package sample.Database;
 import java.sql.*;
 
 public class Database {
-    private PreparedStatement ps;
     private Connection conn;
     private ResultSet rs;
 
@@ -18,7 +17,6 @@ public class Database {
     public ResultSet loadObject(PreparedStatement ps) throws SQLException {
         try {
             getConnection();
-            this.ps = ps;
             return rs = ps.executeQuery();
         }
         catch (Exception ex){

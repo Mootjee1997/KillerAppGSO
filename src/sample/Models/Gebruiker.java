@@ -49,6 +49,11 @@ public class Gebruiker implements Serializable {
         this.geleendeBoeken = new ArrayList<>();
     }
 
+    public boolean wijzigGegevens (Gegevens gegevens) throws Exception {
+        this.gegevens = gegevens;
+        return AppManager.getInstance().getServer().wijzigGegevens(this);
+    }
+
     public boolean wijzigGegevens (String wachtwoord, Gegevens gegevens) throws Exception {
         this.wachtwoord = wachtwoord;
         this.gegevens = gegevens;
@@ -56,12 +61,10 @@ public class Gebruiker implements Serializable {
     }
 
     public void addGeleendeBoek(BoekExemplaar boekExemplaar) {
-        boekExemplaar.setBeschikbaar(false);
         this.geleendeBoeken.add(boekExemplaar);
     }
 
     public void deleteGeleendeBoek(BoekExemplaar boekExemplaar) {
-        boekExemplaar.setBeschikbaar(true);
         this.geleendeBoeken.remove(boekExemplaar);
     }
 

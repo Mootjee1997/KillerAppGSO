@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -19,8 +20,9 @@ public class GebruikerController {
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
 
+    @FXML private Button btnProfielWijzigen;
     @FXML private PasswordField tbWachtwoord, tbPasswordVerif;
-    @FXML private Label lblmessage, lblmessageR, lblmessageP, lblIngelogdAls;
+    @FXML private Label lblmessage, lblIngelogdAls;
     @FXML private TextField tbGebruikersnaam, tbNaam,tbWoonplaats, tbEmail, tbTelefoonNr, tbWachtwoordVisible;
 
     public void showWindow(ActionEvent e){
@@ -31,7 +33,7 @@ public class GebruikerController {
     }
 
     @FXML public void initialize() throws Exception {
-        if (tbNaam != null && tbWoonplaats != null && tbEmail != null && tbTelefoonNr != null && lblmessageP != null) {
+        if (tbNaam != null && tbWoonplaats != null && tbEmail != null && tbTelefoonNr != null && btnProfielWijzigen != null) {
             tbNaam.setText(gebruiker.getGegevens().getNaam());
             tbWoonplaats.setText(gebruiker.getGegevens().getWoonplaats());
             tbEmail.setText(gebruiker.getGegevens().getEmail());
@@ -55,18 +57,10 @@ public class GebruikerController {
 
     @FXML public void login(ActionEvent e) throws Exception {
         if (!tbGebruikersnaam.getText().trim().equals("") && !tbWachtwoord.getText().trim().equals("")) {
-            if (loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText())){
-                showWindow(e);
-            }
-            else {
-                lblmessage.setTextFill(Color.RED);
-                lblmessage.setText("Gebruikersnaam en/of wachtwoord komen niet overeen.");
-            }
+            if (loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText()))showWindow(e);
+            else showMessage("RED", "Gebruikersnaam en/of wachtwoord komen niet overeen.");
         }
-        else {
-            lblmessage.setTextFill(Color.RED);
-            lblmessage.setText("Vul alle velden in aub.");
-        }
+        else showMessage("RED", "Vul alle benodigde velden in aub.");
     }
 
     @FXML public void registreer(ActionEvent e) throws Exception {
@@ -75,29 +69,24 @@ public class GebruikerController {
             loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText());
             showWindow(e);
         }
-        else {
-            lblmessageR.setTextFill(Color.RED);
-            lblmessageR.setText("Vul alle velden in aub.");
-        }
+        else showMessage("RED", "Vul alle benodigde velden in aub.");
     }
 
     @FXML public void wijzigProfiel(ActionEvent e) throws Exception {
         if (tbPasswordVerif.getText().equals(appManager.getGebruiker().getWachtwoord())) {
-            if (!tbWachtwoord.getText().trim().equals("") && !tbNaam.getText().trim().equals("") && !tbEmail.getText().trim().equals("")) {
-                if (appManager.getGebruiker().wijzigGegevens(tbWachtwoord.getText(), new Gegevens(tbNaam.getText(), tbEmail.getText(), tbWoonplaats.getText(), tbTelefoonNr.getText()))) {
-                    lblmessageP.setTextFill(Color.GREEN);
-                    lblmessageP.setText("Gegevens succesvol gewijzigd.");
-                    tbWachtwoord.setText("");
+            if (!tbPasswordVerif.getText().trim().equals("") && !tbNaam.getText().trim().equals("") && !tbEmail.getText().trim().equals("")) {
+                if (!tbWachtwoord.getText().equals("")) {
+                    appManager.getGebruiker().wijzigGegevens(tbWachtwoord.getText(), new Gegevens(tbNaam.getText(), tbEmail.getText(), tbWoonplaats.getText(), tbTelefoonNr.getText()));
                 }
-            } else {
-                lblmessageP.setTextFill(Color.RED);
-                lblmessageP.setText("Vul alle benodigde velden in aub.");
+                else {
+                    appManager.getGebruiker().wijzigGegevens(new Gegevens(tbNaam.getText(), tbEmail.getText(), tbWoonplaats.getText(), tbTelefoonNr.getText()));
+                }
+                showMessage("GREEN", "Gegevens succesvol gewijzigd.");
+                tbWachtwoord.setText("");
             }
+            else showMessage("RED", "Vul alle benodigde velden in aub.");
         }
-        else {
-            lblmessageP.setTextFill(Color.RED);
-            lblmessageP.setText("Huidige wachtwoord klopt niet.");
-        }
+        else showMessage("RED", "Huidig wachtwoord klopt niet.");
     }
 
     @FXML public void loguit(ActionEvent e) throws Exception {
@@ -139,6 +128,11 @@ public class GebruikerController {
     @FXML public void openBoekToevoegen(ActionEvent e) throws Exception {
         scherm = FXMLLoader.load(getClass().getResource("BoekToevoegen (Medewerker).fxml"));
         showWindow(e);
+    }
+    @FXML public void showMessage(String kleur, String message) throws Exception {
+        if (kleur.equals("RED")) lblmessage.setTextFill(Color.RED);
+        if (kleur.equals("GREEN")) lblmessage.setTextFill(Color.GREEN);
+        lblmessage.setText(message);
     }
     @FXML public void showPassword() throws Exception {
         if (tbWachtwoordVisible.isVisible() == false) {

@@ -41,7 +41,7 @@
         </items>
       </SplitPane>
       <ListView layoutX="282.0" layoutY="30.0" prefHeight="613.0" prefWidth="712.0" style="-fx-background-color: #e0dcbc;" />
-      <Label layoutX="537.0" layoutY="46.0" text="Boekenlijst">
+      <Label alignment="CENTER" layoutX="282.0" layoutY="46.0" prefHeight="58.0" prefWidth="712.0" text="Boekenlijst">
          <font>
             <Font size="40.0" />
          </font>
@@ -54,17 +54,17 @@
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
       <ListView fx:id="lsBoekenLijst" layoutX="309.0" layoutY="163.0" onMouseClicked="#getBoekInfo" prefHeight="460.0" prefWidth="240.0" />
       <Label layoutX="626.0" layoutY="168.0" text="Titel:" />
-      <TextField fx:id="tbTitel" layoutX="673.0" layoutY="163.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
+      <TextField fx:id="tbTitel" editable="false" layoutX="673.0" layoutY="163.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
       <Label layoutX="588.0" layoutY="200.0" text="Descriptie:" />
-      <TextField fx:id="tbDescriptie" alignment="TOP_LEFT" layoutX="673.0" layoutY="200.0" prefHeight="161.0" prefWidth="288.0" promptText="Descriptie" />
+      <TextField fx:id="tbDescriptie" alignment="TOP_LEFT" editable="false" layoutX="673.0" layoutY="200.0" prefHeight="161.0" prefWidth="288.0" promptText="Descriptie" />
       <Label layoutX="588.0" layoutY="451.0" text="Tot. aantal:" />
-      <TextField fx:id="tbTotAantal" layoutX="673.0" layoutY="446.0" prefHeight="31.0" prefWidth="92.0" />
+      <TextField fx:id="tbTotAantal" editable="false" layoutX="673.0" layoutY="446.0" prefHeight="31.0" prefWidth="92.0" />
       <Label layoutX="776.0" layoutY="451.0" text="Beschikbaar:" />
-      <TextField fx:id="tbBeschikbaar" layoutX="869.0" layoutY="446.0" prefHeight="31.0" prefWidth="92.0" />
+      <TextField fx:id="tbBeschikbaar" editable="false" layoutX="869.0" layoutY="446.0" prefHeight="31.0" prefWidth="92.0" />
       <Label layoutX="609.0" layoutY="375.0" text="Auteur:" />
-      <TextField fx:id="tbAuteurs" layoutX="673.0" layoutY="370.0" prefHeight="31.0" prefWidth="288.0" promptText="Auteurs" />
+      <TextField fx:id="tbAuteurs" editable="false" layoutX="673.0" layoutY="370.0" prefHeight="31.0" prefWidth="288.0" promptText="Auteurs" />
       <Label layoutX="599.0" layoutY="413.0" text="Uitgever:" />
-      <TextField fx:id="tbUitgever" layoutX="673.0" layoutY="408.0" prefHeight="31.0" prefWidth="288.0" promptText="Uitgever" />
+      <TextField fx:id="tbUitgever" editable="false" layoutX="673.0" layoutY="408.0" prefHeight="31.0" prefWidth="288.0" promptText="Uitgever" />
       <Label layoutX="676.0" layoutY="139.0" text="Boekinfo:">
          <font>
             <Font name="System Bold" size="15.0" />
