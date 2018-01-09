@@ -5,12 +5,14 @@ import sample.Models.Gebruiker;
 import sample.Models.Gegevens;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class IGebruikerContext {
     private Database db = new Database();
     private ResultSet rs = null;
     private String query;
+    private int id = 0;
 
     public Gebruiker login(String gebruikernaam, String wachtwoord) throws Exception {
         query = "SELECT id, gebruikersnaam, wachtwoord, status, naam, email, Woonplaats, TelefoonNr FROM gebruiker WHERE gebruikersnaam = ? AND wachtwoord = ?";
@@ -39,7 +41,7 @@ public class IGebruikerContext {
 
     public int registreer(Gebruiker gebruiker) throws Exception {
         query = "INSERT INTO gebruiker (status, gebruikersnaam, wachtwoord, naam, woonplaats, email, telefoonNr) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        PreparedStatement ps = db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, gebruiker.getStatus());
         ps.setString(2, gebruiker.getGebruikersnaam());
         ps.setString(3, gebruiker.getWachtwoord());
@@ -47,13 +49,11 @@ public class IGebruikerContext {
         ps.setString(5, gebruiker.getGegevens().getWoonplaats());
         ps.setString(6, gebruiker.getGegevens().getEmail());
         ps.setString(7, gebruiker.getGegevens().getTelefoonNr());
-        db.update(ps);
+        ps.execute();
 
-        String query1 = "SELECT id FROM Gebruiker WHERE Gebruikersnaam = ? AND Wachtwoord = ?";
-        PreparedStatement ps1 = db.getConnection().prepareStatement(query1);
-        ps1.setString(1, gebruiker.getGebruikersnaam());
-        ps1.setString(2, gebruiker.getWachtwoord());
-        return db.select(ps1);
+        rs = ps.getGeneratedKeys();
+        if (rs.next()) return id = rs.getInt(1);
+        return -1;
     }
 
     public boolean wijzigGegevens(Gebruiker gebruiker) throws Exception {

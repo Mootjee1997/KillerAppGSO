@@ -8,23 +8,22 @@ public class BoekExemplaar implements Serializable {
     private boolean beschikbaar;
 
     public int getId (){return this.id; }
+    public int getVolgnummer() {
+        return this.volgnummer;
+    }
     public Boek getBoek() {return this.boek; }
     public String getBeschrijving() {
         return beschrijving;
     }
     public boolean getBeschikbaar() {return this.beschikbaar; }
-    public int getVolgnummer() {
-        return this.volgnummer;
-    }
-
     public void setBoek(Boek boek) {
         this.boek = boek;
     }
-    public void setBeschikbaar(boolean beschikbaar) {
-        this.beschikbaar = beschikbaar;
-    }
     public void setBeschrijving(String beschrijving) throws Exception {
         this.beschrijving = beschrijving;
+    }
+    public void setBeschikbaar(boolean beschikbaar) {
+        this.beschikbaar = beschikbaar;
     }
 
     public BoekExemplaar(int id, Boek boek, String beschrijving, boolean beschikbaar, int volgnummer){
@@ -40,10 +39,6 @@ public class BoekExemplaar implements Serializable {
         this.id = id;
         this.beschrijving = beschrijving;
         this.beschikbaar = beschikbaar;
-    }
-
-    public void retourneer(){
-        this.beschikbaar = true;
     }
 
     @Override

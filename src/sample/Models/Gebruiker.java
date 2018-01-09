@@ -27,7 +27,6 @@ public class Gebruiker implements Serializable {
         }
         return geleend;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -53,25 +52,19 @@ public class Gebruiker implements Serializable {
         this.gegevens = gegevens;
         return AppManager.getInstance().getServer().wijzigGegevens(this);
     }
-
     public boolean wijzigGegevens (String wachtwoord, Gegevens gegevens) throws Exception {
         this.wachtwoord = wachtwoord;
         this.gegevens = gegevens;
         return AppManager.getInstance().getServer().wijzigGegevens(this);
     }
-
     public void addGeleendeBoek(BoekExemplaar boekExemplaar) {
         this.geleendeBoeken.add(boekExemplaar);
     }
-
     public void deleteGeleendeBoek(BoekExemplaar boekExemplaar) {
         this.geleendeBoeken.remove(boekExemplaar);
     }
-
     public BoekExemplaar getGeleendBoek(String titel) throws Exception {
-        for (BoekExemplaar boek : getGeleendeBoeken()) {
-            if (boek.getBoek().getTitel().equals(titel)) { return boek; }
-        }
+        for (BoekExemplaar boek : getGeleendeBoeken()) if (boek.getBoek().getTitel().equals(titel)) return boek;
         return null;
     }
 

@@ -37,8 +37,8 @@ public class AppManager implements IRemotePropertyListener {
     public boolean leenUit(int volgnummer, Gebruiker gebruiker) throws Exception {
         return server.leenUit(volgnummer, gebruiker);
     }
-    public boolean retourneer(BoekExemplaar boek, Gebruiker gebruiker) throws Exception {
-        return server.retourneer(boek, gebruiker);
+    public boolean retourneer(int volgnummer, Gebruiker gebruiker) throws Exception {
+        return server.retourneer(volgnummer, gebruiker);
     }
 
     public boolean addAuteur(Auteur auteur) throws Exception {
@@ -88,11 +88,10 @@ public class AppManager implements IRemotePropertyListener {
     public ArrayList<String> getBeschikbareExemplaren(String titel) throws Exception {
         return server.getBeschikbareExemplaren(titel);
     }
-
-    public void setBeschrijving(BoekExemplaar boekExemplaar) throws Exception {
-        zoekBoekExemplaar(boekExemplaar.getVolgnummer()).setBeschrijving(boekExemplaar.getBeschrijving());
-        server.setBeschrijving(boekExemplaar);
+    public void setBeschrijving(int volgnummer, String beschrijving) throws Exception {
+        server.setBeschrijving(volgnummer, beschrijving);
     }
+
     public Gebruiker getGebruiker() {
         return gebruiker;
     }

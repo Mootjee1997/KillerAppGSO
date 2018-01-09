@@ -36,18 +36,4 @@ public class Database {
         }
         return false;
     }
-
-    public int select(PreparedStatement ps) throws SQLException {
-        try {
-            getConnection();
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("ID");
-            }
-        }
-        catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        }
-        return -1;
-    }
 }

@@ -11,31 +11,8 @@ public class IBoekContext {
     private Database db = new Database();
     private ResultSet rs = null;
     private String query;
+    private int id = 0;
 
-    public Boek addBoek(Boek boek) throws Exception {
-        query = "INSERT INTO Boek (UitgeverID, Titel, Descriptie) VALUES ((SELECT ID FROM Uitgever WHERE Naam = ?), ?, ?)";
-        PreparedStatement ps = db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        ps.setString(1, boek.getUitgever().getGegevens().getNaam());
-        ps.setString(2, boek.getTitel());
-        ps.setString(3, boek.getDescriptie());
-
-        ps.execute();
-        rs = ps.getGeneratedKeys();
-        int id = 0;
-        if (rs.next()) {
-            id = rs.getInt(1);
-        }
-        boek.setId(id);
-
-        for (Auteur auteur : boek.getAuteurs()) {
-            query = "INSERT INTO `Auteur-Boek` (AuteurID, BoekID) VALUES ((SELECT ID FROM Auteur WHERE Naam = ?), ?)";
-            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
-            ps1.setString(1, auteur.getGegevens().getNaam());
-            ps1.setInt(2, boek.getId());
-            db.update(ps1);
-        }
-        return boek;
-    }
 
     public boolean leenUit(BoekExemplaar boek, Gebruiker gebruiker) throws Exception {
         query = "INSERT INTO `Gebruiker-Boekexemplaar` (GebruikerID, BoekID) VALUES (?, ?)";
@@ -61,6 +38,109 @@ public class IBoekContext {
         PreparedStatement ps1 = db.getConnection().prepareStatement(query);
         ps1.setInt(1, boek.getId());
         return db.update(ps1);
+    }
+
+    public boolean setBeschrijving(BoekExemplaar boekExemplaar) throws Exception {
+        query = "UPDATE BoekExemplaar SET Beschrijving = ? WHERE ID = ?";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        ps.setString(1, boekExemplaar.getBeschrijving());
+        ps.setInt(2, boekExemplaar.getId());
+        return db.update(ps);
+    }
+
+    public boolean addAuteur(Auteur auteur) throws Exception {
+        query = "INSERT INTO Auteur (Naam) VALUES (?)";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        ps.setString(1, auteur.getGegevens().getNaam());
+        return db.update(ps);
+    }
+
+    public boolean addUitgever(Uitgever uitgever) throws Exception {
+        query = "INSERT INTO Uitgever (Naam) VALUES (?)";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        ps.setString(1, uitgever.getGegevens().getNaam());
+        return db.update(ps);
+    }
+
+    public int addBoekExemplaar(Boek boek, int volgnr) throws Exception {
+        query = "INSERT INTO BoekExemplaar (BoekID, Volgnummer) VALUES (?, ?)";
+        PreparedStatement ps = db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        ps.setInt(1, boek.getId());
+        ps.setInt(2, volgnr);
+        ps.execute();
+        rs = ps.getGeneratedKeys();
+        if (rs.next()) return id = rs.getInt(1);
+        return -1;
+    }
+
+    public Boek addBoek(Boek boek) throws Exception {
+        query = "INSERT INTO Boek (UitgeverID, Titel, Descriptie) VALUES ((SELECT ID FROM Uitgever WHERE Naam = ?), ?, ?)";
+        PreparedStatement ps = db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        ps.setString(1, boek.getUitgever().getGegevens().getNaam());
+        ps.setString(2, boek.getTitel());
+        ps.setString(3, boek.getDescriptie());
+        ps.execute();
+        rs = ps.getGeneratedKeys();
+        if (rs.next()) boek.setId(rs.getInt(1));;
+
+        for (Auteur auteur : boek.getAuteurs()) {
+            query = "INSERT INTO `Auteur-Boek` (AuteurID, BoekID) VALUES ((SELECT ID FROM Auteur WHERE Naam = ?), ?)";
+            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
+            ps1.setString(1, auteur.getGegevens().getNaam());
+            ps1.setInt(2, boek.getId());
+            db.update(ps1);
+        }
+        return boek;
+    }
+
+    public ArrayList<Auteur> getAuteurs() throws Exception {
+        query = "SELECT * FROM Auteur";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        rs = db.loadObject(ps);
+
+        ArrayList<Auteur> auteurs = new ArrayList<>();
+        while (rs.next()) {
+            Auteur auteur = new Auteur(new Gegevens(rs.getString("Naam"), rs.getString("Email"), rs.getString("Woonplaats"), rs.getString("TelefoonNr")));
+            auteurs.add(auteur);
+        }
+        return auteurs;
+    }
+
+    public ArrayList<Uitgever> getUitgevers() throws Exception {
+        query = "SELECT * FROM Uitgever";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        rs = db.loadObject(ps);
+
+        ArrayList<Uitgever> uitgevers = new ArrayList<>();
+        while (rs.next()) {
+            Uitgever uitgever = new Uitgever(new Gegevens(rs.getString("Naam"), rs.getString("Email"), rs.getString("Woonplaats"), rs.getString("TelefoonNr")));
+            uitgevers.add(uitgever);
+        }
+        return uitgevers;
+    }
+
+    public ArrayList<BoekExemplaar> getBoekExemplaren() throws Exception {
+        query = "SELECT * FROM BoekExemplaar";
+        PreparedStatement ps = db.getConnection().prepareStatement(query);
+        rs = db.loadObject(ps);
+
+        ArrayList<BoekExemplaar> boekExemplaren = new ArrayList<>();
+        while (rs.next()) {
+            BoekExemplaar boekExemplaar = new BoekExemplaar(rs.getInt("ID"), rs.getString("Beschrijving"), rs.getBoolean("Beschikbaar"), rs.getInt("Volgnummer"));
+
+            ResultSet rs1;
+            query = "SELECT * FROM Boek WHERE ID = (SELECT BoekID FROM BoekExemplaar WHERE ID = ?)";
+            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
+            ps1.setInt(1, boekExemplaar.getId());
+            rs1 = db.loadObject(ps1);
+
+            while (rs1.next()) {
+                Boek boek = new Boek(rs1.getInt("ID"), rs1.getString("Titel"), rs1.getString("Descriptie"));
+                boekExemplaar.setBoek(boek);
+            }
+            boekExemplaren.add(boekExemplaar);
+        }
+        return boekExemplaren;
     }
 
     public ArrayList<Boek> getBoeken() throws Exception {
@@ -107,93 +187,5 @@ public class IBoekContext {
             boeken.add(boek);
         }
         return boeken;
-    }
-
-    public ArrayList<Auteur> getAuteurs() throws SQLException, ClassNotFoundException {
-        query = "SELECT * FROM Auteur";
-        PreparedStatement ps = db.getConnection().prepareStatement(query);
-        rs = db.loadObject(ps);
-
-        ArrayList<Auteur> auteurs = new ArrayList<>();
-        while (rs.next()) {
-            Auteur auteur = new Auteur(new Gegevens(rs.getString("Naam"), rs.getString("Email"), rs.getString("Woonplaats"), rs.getString("TelefoonNr")));
-            auteurs.add(auteur);
-        }
-        return auteurs;
-    }
-
-    public ArrayList<Uitgever> getUitgevers() throws SQLException, ClassNotFoundException {
-        query = "SELECT * FROM Uitgever";
-        PreparedStatement ps = db.getConnection().prepareStatement(query);
-        rs = db.loadObject(ps);
-
-        ArrayList<Uitgever> uitgevers = new ArrayList<>();
-        while (rs.next()) {
-            Uitgever uitgever = new Uitgever(new Gegevens(rs.getString("Naam"), rs.getString("Email"), rs.getString("Woonplaats"), rs.getString("TelefoonNr")));
-            uitgevers.add(uitgever);
-        }
-        return uitgevers;
-    }
-
-    public boolean setBeschrijving(BoekExemplaar boekExemplaar) throws SQLException, ClassNotFoundException {
-        query = "UPDATE BoekExemplaar SET Beschrijving = ? WHERE ID = ?";
-        PreparedStatement ps = db.getConnection().prepareStatement(query);
-        ps.setString(1, boekExemplaar.getBeschrijving());
-        ps.setInt(2, boekExemplaar.getId());
-        return db.update(ps);
-    }
-
-    public ArrayList<BoekExemplaar> getBoekExemplaren() throws SQLException, ClassNotFoundException {
-        query = "SELECT * FROM BoekExemplaar";
-        PreparedStatement ps = db.getConnection().prepareStatement(query);
-        rs = db.loadObject(ps);
-
-        ArrayList<BoekExemplaar> boekExemplaren = new ArrayList<>();
-        while (rs.next()) {
-            BoekExemplaar boekExemplaar = new BoekExemplaar(rs.getInt("ID"), rs.getString("Beschrijving"), rs.getBoolean("Beschikbaar"), rs.getInt("Volgnummer"));
-
-            ResultSet rs1;
-            query = "SELECT * FROM Boek WHERE ID = (SELECT BoekID FROM BoekExemplaar WHERE ID = ?)";
-            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
-            ps1.setInt(1, boekExemplaar.getId());
-            rs1 = db.loadObject(ps1);
-
-            while (rs1.next()) {
-                Boek boek = new Boek(rs1.getInt("ID"), rs1.getString("Titel"), rs1.getString("Descriptie"));
-                boekExemplaar.setBoek(boek);
-            }
-            boekExemplaren.add(boekExemplaar);
-        }
-        return boekExemplaren;
-    }
-
-    public boolean addAuteur(Auteur auteur) throws SQLException, ClassNotFoundException {
-        query = "INSERT INTO Auteur (Naam) VALUES (?)";
-        PreparedStatement ps = db.getConnection().prepareStatement(query);
-        ps.setString(1, auteur.getGegevens().getNaam());
-        return db.update(ps);
-    }
-
-    public boolean addUitgever(Uitgever uitgever) throws SQLException, ClassNotFoundException {
-        query = "INSERT INTO Uitgever (Naam) VALUES (?)";
-        PreparedStatement ps = db.getConnection().prepareStatement(query);
-        ps.setString(1, uitgever.getGegevens().getNaam());
-        return db.update(ps);
-    }
-
-    public int addBoekExemplaar(Boek boek, int volgnr) throws SQLException, ClassNotFoundException {
-        query = "INSERT INTO BoekExemplaar (BoekID, Beschikbaar, Volgnummer) VALUES (?, ?, ?)";
-        PreparedStatement ps = db.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        ps.setInt(1, boek.getId());
-        ps.setBoolean(2, true);
-        ps.setInt(3, volgnr);
-
-        ps.execute();
-        rs = ps.getGeneratedKeys();
-        int id = 0;
-        if (rs.next()) {
-            id = rs.getInt(1);
-        }
-        return id;
     }
 }

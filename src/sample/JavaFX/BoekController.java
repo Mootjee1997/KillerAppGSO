@@ -18,14 +18,9 @@ public class BoekController {
     private Parent scherm;
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
-    private ObservableList<String> boeken = FXCollections.observableArrayList(appManager.getBoeken());
-    private ObservableList<String> auteurs = FXCollections.observableArrayList(appManager.getAuteurs());
-    private ObservableList<String> uitgevers = FXCollections.observableArrayList(appManager.getUitgevers());
-    private ObservableList<String> gebruikers = FXCollections.observableArrayList(appManager.getGebruikers());
-    private ObservableList<String> mijnBoeken = FXCollections.observableArrayList(appManager.getGeleendeBoeken(gebruiker));
-    private ObservableList<String> beschikbareExemplaren;
-    private ObservableList<String> geleendeBoeken;
+    private ObservableList<String> boeken, auteurs, uitgevers, gebruikers, mijnBoeken, beschikbareExemplaren, geleendeBoeken;
 
+    @FXML private Button btnLeenUit;
     @FXML private Label lblIngelogdAls, lblMessageBL;
     @FXML private ListView<String> lsBoekenLijst, lsMijnBoeken, lsGeleendeBoeken, lsBeschikbareExemplaren, lsGebruikersLijst;
     @FXML private TextField tbTitel, tbDescriptie, tbTotAantal, tbBeschikbaar,tbAuteurs, tbUitgever, tbNaam, tbWoonplaats, tbEmail, tbTelefoonNr, tbBeschrijving;
@@ -39,16 +34,17 @@ public class BoekController {
     }
 
     @FXML public void initialize() throws Exception {
-        laadGegevens();
+        updateLists();
         lblIngelogdAls.setText("Ingelogd als: " + gebruiker.getGebruikersnaam());
     }
 
     @FXML public void boekToevoegen(ActionEvent e) throws Exception {
         if (!tbTitel.getText().trim().equals("") && !tbDescriptie.getText().trim().equals("") && !tbTotAantal.getText().trim().equals("") && !tbAuteurs.getText().trim().equals("") && !tbUitgever.getText().trim().equals("")) {
+            Uitgever uitgever;
+            ArrayList<Auteur> auteursListBoek = new ArrayList<>();
             String auteurs = tbAuteurs.getText();
             String[] auteursList = auteurs.split(", ");
-            ArrayList<Auteur> auteursListBoek = new ArrayList<>();
-            Uitgever uitgever;
+            //Toevoegen van de opgegeven Auteurs aan het nieuwe Boek-object
             for (String s : auteursList) {
                 if (appManager.zoekAuteur(s) != null) {
                     auteursListBoek.add(appManager.zoekAuteur(s));
@@ -59,6 +55,7 @@ public class BoekController {
                     auteursListBoek.add(auteur);
                 }
             }
+            //Toevoegen van de opgegeven Uitgever aan het nieuwe boek-object
             if (appManager.zoekUitgever(tbUitgever.getText()) != null) {
                 uitgever = appManager.zoekUitgever(tbUitgever.getText());
             }
@@ -80,14 +77,14 @@ public class BoekController {
             updateLists();
             showMessage("GREEN", "Boek succesvol uitgeleend aan: " + gebruiker.getGebruikersnaam() + ".");
         }
-        else showMessage("RED", "Selecteer eerst een boekexemplaar en gebruiker uit de lijsten.");
+        else showMessage("RED", "Selecteer eerst een boekexemplaar en gebruiker uit de lijst.");
     }
 
     @FXML public void retourneer(ActionEvent e) throws Exception {
         if (lsGeleendeBoeken.getSelectionModel().getSelectedItem() != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
+            int volgnummer = Integer.parseInt(lsGeleendeBoeken.getSelectionModel().getSelectedItem());
             Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
-            BoekExemplaar boekExemplaar = appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsGeleendeBoeken.getSelectionModel().getSelectedItem())));
-            appManager.retourneer(boekExemplaar, gebruiker);
+            appManager.retourneer(volgnummer, gebruiker);
             updateLists();
             showMessage("GREEN", "Boek succesvol geretourneerd.");
         }
@@ -96,9 +93,9 @@ public class BoekController {
 
     @FXML public void beschrijvingWijzigen(ActionEvent e) throws Exception {
         if (lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null) {
-            BoekExemplaar boekExemplaar = appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem())));
-            boekExemplaar.setBeschrijving(tbBeschrijving.getText());
-            appManager.setBeschrijving(boekExemplaar);
+            int volgnummer = Integer.parseInt(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem());
+            String beschrijving = tbBeschrijving.getText();
+            appManager.setBeschrijving(volgnummer, beschrijving);
             showMessage("GREEN", "Beschrijving succesvol gewijzigd.");
         }
         else showMessage("RED", "Selecteer eerst een boekexemplaar uit de lijst.");
@@ -110,73 +107,6 @@ public class BoekController {
         showWindow(e);
     }
 
-    @FXML public void getGebruikerInfo() throws Exception {
-        if (tbBeschrijving != null) tbBeschrijving.setText("");
-        if (lsGebruikersLijst != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
-            Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
-            tbNaam.setText(gebruiker.getGegevens().getNaam());
-            tbWoonplaats.setText(gebruiker.getGegevens().getWoonplaats());
-            tbEmail.setText(gebruiker.getGegevens().getEmail());
-            tbTelefoonNr.setText(gebruiker.getGegevens().getTelefoonNr());
-            getGeleendeBoeken();
-        }
-    }
-    @FXML public void getGeleendeBoeken() throws Exception {
-        if (lsGeleendeBoeken != null) {
-            geleendeBoeken = FXCollections.observableArrayList(appManager.getGeleendeBoeken(appManager.zoekGebruiker(lsGebruikersLijst.getSelectionModel().getSelectedItem())));
-            lsGeleendeBoeken.setItems(geleendeBoeken);
-        }
-    }
-    @FXML public void getBoekInfo() throws Exception {
-        Boek boek = null;
-        if (lsBoekenLijst != null && lsBoekenLijst.getSelectionModel().getSelectedItem() != null) { boek = appManager.zoekBoek(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem())); }
-        if (lsMijnBoeken != null && lsMijnBoeken.getSelectionModel().getSelectedItem() != null) {
-            boek = appManager.zoekBoek(appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsMijnBoeken.getSelectionModel().getSelectedItem()))).getBoek().getTitel());
-        }
-
-        if (boek != null) {
-            if (lsBeschikbareExemplaren != null) {
-                tbBeschrijving.setText("");
-                beschikbareExemplaren = FXCollections.observableArrayList(appManager.getBeschikbareExemplaren(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem())));
-                lsBeschikbareExemplaren.setItems(beschikbareExemplaren);
-            }
-            if (tbTotAantal != null && tbBeschikbaar != null) {
-                tbTotAantal.setText(String.valueOf(boek.getBoekExemplaren().size()));
-                tbBeschikbaar.setText(String.valueOf(boek.getAantalBeschikbaar()));
-            }
-            tbTitel.setText(boek.getTitel());
-            tbDescriptie.setText(boek.getDescriptie());
-            tbUitgever.setText(boek.getUitgever().getGegevens().getNaam());
-            tbAuteurs.setText("");
-            for (Auteur auteur : boek.getAuteurs()) {
-                if (tbAuteurs.getText().equals("")) {
-                    tbAuteurs.setText(auteur.getGegevens().getNaam());
-                } else tbAuteurs.setText(tbAuteurs.getText() + ", " + auteur.getGegevens().getNaam());
-            }
-        }
-    }
-    @FXML public void getBeschrijving() throws Exception {
-        tbBeschrijving.setText("");
-        if (lsGeleendeBoeken != null && lsGeleendeBoeken.getSelectionModel().getSelectedItem() != null) {
-            Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
-            BoekExemplaar boek = gebruiker.getGeleendBoek(appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsGeleendeBoeken.getSelectionModel().getSelectedItem()))).getBoek().getTitel());
-            tbBeschrijving.setText(boek.getBeschrijving());
-        }
-        if (lsBeschikbareExemplaren != null && lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null) {
-            BoekExemplaar boek = appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem())));
-            tbBeschrijving.setText(boek.getBeschrijving());
-        }
-    }
-    @FXML public void selecteerAuteur(ActionEvent e) throws Exception {
-        if (!tbAuteurs.getText().contains(cbAuteurs.getSelectionModel().getSelectedItem().toString())) {
-            if (tbAuteurs.getText().equals(""))
-                tbAuteurs.setText(cbAuteurs.getSelectionModel().getSelectedItem().toString());
-            else tbAuteurs.setText(tbAuteurs.getText() + ", " + cbAuteurs.getSelectionModel().getSelectedItem().toString());
-        }
-    }
-    @FXML public void selecteerUitgever(ActionEvent e) throws Exception {
-        tbUitgever.setText(cbUitgever.getSelectionModel().getSelectedItem().toString());
-    }
     @FXML public void openMijnBoeken(ActionEvent e) throws Exception {
         scherm = FXMLLoader.load(getClass().getResource("MijnBoeken (Klant).fxml"));
         showWindow(e);
@@ -203,22 +133,97 @@ public class BoekController {
         scherm = FXMLLoader.load(getClass().getResource("GebruikersLijst (Medewerker).fxml"));
         showWindow(e);
     }
-    @FXML public void laadGegevens() throws Exception {
-        if (lsMijnBoeken != null) { lsMijnBoeken.setItems(mijnBoeken); }
-        if (lsBoekenLijst != null) { lsBoekenLijst.setItems(boeken); }
-        if (lsGebruikersLijst != null) { lsGebruikersLijst.setItems(gebruikers); }
-        if (cbAuteurs != null && cbUitgever != null) { cbAuteurs.setItems(auteurs);cbUitgever.setItems(uitgevers); }
+    @FXML public void selecteerAuteur(ActionEvent e) throws Exception {
+        if (!tbAuteurs.getText().contains(cbAuteurs.getSelectionModel().getSelectedItem().toString())) {
+            if (tbAuteurs.getText().equals(""))
+                tbAuteurs.setText(cbAuteurs.getSelectionModel().getSelectedItem().toString());
+            else tbAuteurs.setText(tbAuteurs.getText() + ", " + cbAuteurs.getSelectionModel().getSelectedItem().toString());
+        }
+    }
+    @FXML public void selecteerUitgever(ActionEvent e) throws Exception {
+        tbUitgever.setText(cbUitgever.getSelectionModel().getSelectedItem().toString());
+    }
+    @FXML public void getSelectedItemInfo() throws Exception {
+        if (tbBeschrijving != null) {
+            tbBeschrijving.setText("");
+        }
+        if (lsGebruikersLijst != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null && btnLeenUit == null) {
+            Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
+            tbNaam.setText(gebruiker.getGegevens().getNaam());
+            tbWoonplaats.setText(gebruiker.getGegevens().getWoonplaats());
+            tbEmail.setText(gebruiker.getGegevens().getEmail());
+            tbTelefoonNr.setText(gebruiker.getGegevens().getTelefoonNr());
+            updateLists();
+        }
+        if (lsGeleendeBoeken != null && lsGeleendeBoeken.getSelectionModel().getSelectedItem() != null) {
+            BoekExemplaar boek = appManager.zoekBoekExemplaar(Integer.parseInt(lsGeleendeBoeken.getSelectionModel().getSelectedItem()));
+            tbBeschrijving.setText(boek.getBeschrijving());
+        }
+        if (lsBeschikbareExemplaren != null && lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null) {
+            BoekExemplaar boek = appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem())));
+            tbBeschrijving.setText(boek.getBeschrijving());
+        }
+
+        Boek boek = null;
+        if (lsBoekenLijst != null && lsBoekenLijst.getSelectionModel().getSelectedItem() != null) {
+            boek = appManager.zoekBoek(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem()));
+        }
+        if (lsMijnBoeken != null && lsMijnBoeken.getSelectionModel().getSelectedItem() != null) {
+            boek = appManager.zoekBoek(appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsMijnBoeken.getSelectionModel().getSelectedItem()))).getBoek().getTitel());
+        }
+        if (boek != null) {
+            if (lsBeschikbareExemplaren != null) {
+                beschikbareExemplaren = FXCollections.observableArrayList(appManager.getBeschikbareExemplaren(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem())));
+                lsBeschikbareExemplaren.setItems(beschikbareExemplaren);
+            }
+            if (tbTotAantal != null && tbBeschikbaar != null) {
+                tbTotAantal.setText(String.valueOf(boek.getBoekExemplaren().size()));
+                tbBeschikbaar.setText(String.valueOf(boek.getAantalBeschikbaar()));
+            }
+            tbTitel.setText(boek.getTitel());
+            tbDescriptie.setText(boek.getDescriptie());
+            tbUitgever.setText(boek.getUitgever().getGegevens().getNaam());
+            tbAuteurs.setText("");
+            for (Auteur auteur : boek.getAuteurs()) {
+                if (tbAuteurs.getText().equals("")) {
+                    tbAuteurs.setText(auteur.getGegevens().getNaam());
+                }
+                else {
+                    tbAuteurs.setText(tbAuteurs.getText() + ", " + auteur.getGegevens().getNaam());
+                }
+            }
+        }
     }
     @FXML public void updateLists() throws Exception {
-        if (lsBeschikbareExemplaren != null) {
+        if (lsBeschikbareExemplaren != null && lsBoekenLijst != null && lsBoekenLijst.getSelectionModel().getSelectedItem() != null) {
             beschikbareExemplaren = FXCollections.observableArrayList(appManager.getBeschikbareExemplaren(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem())));
             lsBeschikbareExemplaren.setItems(beschikbareExemplaren);
-            getBoekInfo();
+            getSelectedItemInfo();
         }
-        if (lsGeleendeBoeken != null) {
+        if (lsGeleendeBoeken != null && lsGebruikersLijst != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
             geleendeBoeken = FXCollections.observableArrayList(appManager.getGeleendeBoeken(appManager.zoekGebruiker(lsGebruikersLijst.getSelectionModel().getSelectedItem())));
             lsGeleendeBoeken.setItems(geleendeBoeken);
             tbBeschrijving.setText("");
+        }
+        if (lsBoekenLijst != null) {
+            boeken = FXCollections.observableArrayList(appManager.getBoeken());
+            lsBoekenLijst.setItems(boeken);
+        }
+        if (lsGebruikersLijst != null) {
+            gebruikers = FXCollections.observableArrayList(appManager.getGebruikers());
+            lsGebruikersLijst.setItems(gebruikers);
+        }
+        if (lsMijnBoeken != null) {
+            mijnBoeken = FXCollections.observableArrayList(appManager.getGeleendeBoeken(gebruiker));
+            lsMijnBoeken.setItems(mijnBoeken);
+        }
+        if (cbAuteurs != null) {
+            auteurs = FXCollections.observableArrayList(appManager.getAuteurs());
+            cbAuteurs.setItems(auteurs);
+        }
+        if (cbUitgever != null) {
+            uitgevers = FXCollections.observableArrayList(appManager.getUitgevers());
+            cbUitgever.setItems(uitgevers);
         }
     }
     @FXML public void showMessage(String kleur, String message) throws Exception {

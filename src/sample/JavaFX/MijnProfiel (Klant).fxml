@@ -82,7 +82,7 @@
             <Glow />
          </effect>
       </Button>
-      <Label fx:id="lblmessageP" alignment="CENTER" layoutX="308.0" layoutY="175.0" prefHeight="21.0" prefWidth="661.0">
+      <Label fx:id="lblmessage" alignment="CENTER" layoutX="308.0" layoutY="175.0" prefHeight="21.0" prefWidth="661.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Label>

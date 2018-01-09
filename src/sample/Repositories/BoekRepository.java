@@ -1,7 +1,6 @@
 package sample.Repositories;
 import sample.Contexts.IBoekContext;
 import sample.Models.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class BoekRepository {
@@ -9,10 +8,6 @@ public class BoekRepository {
 
     public BoekRepository(IBoekContext context){
         this.context = context;
-    }
-
-    public Boek addBoek(Boek boek) throws Exception {
-        return context.addBoek(boek);
     }
 
     public boolean leenUit(BoekExemplaar boek, Gebruiker gebruiker) throws Exception {
@@ -23,35 +18,40 @@ public class BoekRepository {
         return context.retourneer(boek, gebruiker);
     }
 
+    public boolean setBeschrijving(BoekExemplaar boekExemplaar) throws Exception {
+        return context.setBeschrijving(boekExemplaar);
+    }
+
+    public boolean addAuteur(Auteur auteur) throws Exception {
+        return context.addAuteur(auteur);
+    }
+
+    public boolean addUitgever(Uitgever uitgever) throws Exception {
+        return context.addUitgever(uitgever);
+    }
+
+    public int addBoekExemplaar(Boek boek, int volgnr) throws Exception {
+        return context.addBoekExemplaar(boek, volgnr);
+    }
+
+    public Boek addBoek(Boek boek) throws Exception {
+        return context.addBoek(boek);
+    }
+
+    public ArrayList<Auteur> getAuteurs() throws Exception {
+        return context.getAuteurs();
+    }
+
+    public ArrayList<Uitgever> getUitgevers() throws Exception {
+        return context.getUitgevers();
+    }
+
+    public ArrayList<BoekExemplaar> getBoekExemplaren() throws Exception {
+        return context.getBoekExemplaren();
+    }
+
     public ArrayList<Boek> getBoeken() throws Exception {
         return context.getBoeken();
     }
 
-    public ArrayList<Auteur> getAuteurs() throws SQLException, ClassNotFoundException {
-        return context.getAuteurs();
-    }
-
-    public ArrayList<Uitgever> getUitgevers() throws SQLException, ClassNotFoundException {
-        return context.getUitgevers();
-    }
-
-    public boolean setBeschrijving(BoekExemplaar boekExemplaar) throws SQLException, ClassNotFoundException {
-        return context.setBeschrijving(boekExemplaar);
-    }
-
-    public ArrayList<BoekExemplaar> getBoekExemplaren() throws SQLException, ClassNotFoundException {
-        return context.getBoekExemplaren();
-    }
-
-    public boolean addAuteur(Auteur auteur) throws SQLException, ClassNotFoundException {
-        return context.addAuteur(auteur);
-    }
-
-    public boolean addUitgever(Uitgever uitgever) throws SQLException, ClassNotFoundException {
-        return context.addUitgever(uitgever);
-    }
-
-    public int addBoekExemplaar(Boek boek, int volgnr) throws SQLException, ClassNotFoundException {
-        return context.addBoekExemplaar(boek, volgnr);
-    }
 }

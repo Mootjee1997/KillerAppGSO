@@ -47,7 +47,7 @@
          </effect>
       </Button>
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
-      <ListView fx:id="lsBoekenLijst" layoutX="309.0" layoutY="172.0" onMouseClicked="#getBoekInfo" prefHeight="128.0" prefWidth="236.0" />
+      <ListView fx:id="lsBoekenLijst" layoutX="309.0" layoutY="172.0" onMouseClicked="#getSelectedItemInfo" prefHeight="128.0" prefWidth="236.0" />
       <Label layoutX="622.0" layoutY="180.0" text="Titel:" />
       <TextField fx:id="tbTitel" editable="false" layoutX="673.0" layoutY="175.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
       <Label layoutX="587.0" layoutY="216.0" text="Descriptie:" />
@@ -91,7 +91,7 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <ListView fx:id="lsBeschikbareExemplaren" layoutX="309.0" layoutY="330.0" onMouseClicked="#getBeschrijving" prefHeight="128.0" prefWidth="236.0" />
+      <ListView fx:id="lsBeschikbareExemplaren" layoutX="309.0" layoutY="330.0" onMouseClicked="#getSelectedItemInfo" prefHeight="128.0" prefWidth="236.0" />
       <Label layoutX="309.0" layoutY="309.0" text="Beschikbare exemplaren (volgnr):">
          <font>
             <Font name="System Bold" size="15.0" />

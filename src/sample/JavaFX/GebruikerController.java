@@ -57,7 +57,9 @@ public class GebruikerController {
 
     @FXML public void login(ActionEvent e) throws Exception {
         if (!tbGebruikersnaam.getText().trim().equals("") && !tbWachtwoord.getText().trim().equals("")) {
-            if (loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText()))showWindow(e);
+            if (loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText())) {
+                showWindow(e);
+            }
             else showMessage("RED", "Gebruikersnaam en/of wachtwoord komen niet overeen.");
         }
         else showMessage("RED", "Vul alle benodigde velden in aub.");
@@ -83,6 +85,7 @@ public class GebruikerController {
                 }
                 showMessage("GREEN", "Gegevens succesvol gewijzigd.");
                 tbWachtwoord.setText("");
+                tbPasswordVerif.setText("");
             }
             else showMessage("RED", "Vul alle benodigde velden in aub.");
         }
@@ -130,8 +133,12 @@ public class GebruikerController {
         showWindow(e);
     }
     @FXML public void showMessage(String kleur, String message) throws Exception {
-        if (kleur.equals("RED")) lblmessage.setTextFill(Color.RED);
-        if (kleur.equals("GREEN")) lblmessage.setTextFill(Color.GREEN);
+        if (kleur.equals("RED")) {
+            lblmessage.setTextFill(Color.RED);
+        }
+        if (kleur.equals("GREEN")) {
+            lblmessage.setTextFill(Color.GREEN);
+        }
         lblmessage.setText(message);
     }
     @FXML public void showPassword() throws Exception {

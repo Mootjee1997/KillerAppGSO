@@ -33,6 +33,9 @@ public class Server extends UnicastRemoteObject implements IServer {
                 System.out.println("Server: bound and ready for use.");
             }
             getGebruikers();
+            getAuteurs();
+            getUitgevers();
+            getBoekExemplaren();
             getBoeken();
         }
         catch (Exception e){
@@ -66,11 +69,11 @@ public class Server extends UnicastRemoteObject implements IServer {
         zoekGebruiker(gebruiker.getGebruikersnaam()).addGeleendeBoek(boekExemplaar);
         return boekRepository.leenUit(boekExemplaar, gebruiker);
     }
-    public boolean retourneer(BoekExemplaar boek, Gebruiker gebruiker) throws Exception {
-        BoekExemplaar boekExemplaar = zoekBoekExemplaar(boek.getVolgnummer());
+    public boolean retourneer(int volgnummer, Gebruiker gebruiker) throws Exception {
+        BoekExemplaar boekExemplaar = zoekBoekExemplaar(volgnummer);
         boekExemplaar.setBeschikbaar(true);
         zoekGebruiker(gebruiker.getGebruikersnaam()).deleteGeleendeBoek(boekExemplaar);
-        return boekRepository.retourneer(boek, gebruiker);
+        return boekRepository.retourneer(boekExemplaar, gebruiker);
     }
 
     public boolean addAuteur(Auteur auteur) throws Exception {
@@ -195,8 +198,8 @@ public class Server extends UnicastRemoteObject implements IServer {
     public boolean wijzigGegevens(Gebruiker gebruiker) throws Exception {
         return gebruikerRepository.wijzigGegevens(gebruiker);
     }
-    public boolean setBeschrijving(BoekExemplaar boekExemplaar) throws Exception {
-        zoekBoekExemplaar(boekExemplaar.getVolgnummer()).setBeschrijving(boekExemplaar.getBeschrijving());
-        return boekRepository.setBeschrijving(boekExemplaar);
+    public boolean setBeschrijving(int volgnummer, String beschrijving) throws Exception {
+        zoekBoekExemplaar(volgnummer).setBeschrijving(beschrijving);
+        return boekRepository.setBeschrijving(zoekBoekExemplaar(volgnummer));
     }
 }

@@ -1,6 +1,5 @@
 package sample.Models;
 import sample.Core.AppManager;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -25,7 +24,6 @@ public class Boek implements Serializable {
         }
         return exemplaren;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -55,9 +53,7 @@ public class Boek implements Serializable {
 
     public int getAantalBeschikbaar() throws Exception {
         int i = 0;
-        for (BoekExemplaar boek : getBoekExemplaren()) {
-            if (boek.getBeschikbaar()) { i++; }
-        }
+        for (BoekExemplaar boek : getBoekExemplaren()) if (boek.getBeschikbaar()) i++;
         return i;
     }
 
