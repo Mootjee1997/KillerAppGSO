@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
@@ -52,24 +53,24 @@
          </effect>
       </Button>
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
-      <ListView fx:id="lsMijnBoeken" layoutX="309.0" layoutY="163.0" onMouseClicked="#getSelectedItemInfo" prefHeight="460.0" prefWidth="240.0" />
-      <Label layoutX="626.0" layoutY="168.0" text="Titel:" />
-      <TextField fx:id="tbTitel" editable="false" layoutX="673.0" layoutY="163.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
-      <Label layoutX="588.0" layoutY="200.0" text="Descriptie:" />
-      <TextField fx:id="tbDescriptie" alignment="TOP_LEFT" editable="false" layoutX="673.0" layoutY="200.0" prefHeight="161.0" prefWidth="288.0" promptText="Descriptie" />
-      <Label layoutX="609.0" layoutY="375.0" text="Auteur:" />
-      <TextField fx:id="tbAuteurs" editable="false" layoutX="673.0" layoutY="370.0" prefHeight="31.0" prefWidth="288.0" promptText="Auteurs" />
-      <Label layoutX="599.0" layoutY="413.0" text="Uitgever:" />
-      <TextField fx:id="tbUitgever" editable="false" layoutX="673.0" layoutY="408.0" prefHeight="31.0" prefWidth="288.0" promptText="Uitgever" />
-      <Label layoutX="676.0" layoutY="139.0" text="Boekinfo:">
+      <ListView fx:id="lsMijnBoeken" layoutX="309.0" layoutY="172.0" onMouseClicked="#getSelectedItemInfo" prefHeight="440.0" prefWidth="240.0" />
+      <Label layoutX="622.0" layoutY="179.0" text="Titel:" />
+      <TextField fx:id="tbTitel" editable="false" layoutX="669.0" layoutY="174.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
+      <Label layoutX="585.0" layoutY="209.0" text="Descriptie:" />
+      <Label layoutX="605.0" layoutY="548.0" text="Auteur:" />
+      <TextField fx:id="tbAuteurs" editable="false" layoutX="669.0" layoutY="543.0" prefHeight="31.0" prefWidth="288.0" promptText="Auteurs" />
+      <Label layoutX="595.0" layoutY="586.0" text="Uitgever:" />
+      <TextField fx:id="tbUitgever" editable="false" layoutX="669.0" layoutY="581.0" prefHeight="31.0" prefWidth="288.0" promptText="Uitgever" />
+      <Label layoutX="672.0" layoutY="150.0" text="Boekinfo:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="309.0" layoutY="139.0" text="Mijn geleende boeken (volgnr):">
+      <Label layoutX="309.0" layoutY="150.0" text="Mijn geleende boeken (volgnr):">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
+      <TextArea fx:id="tbDescriptie" editable="false" layoutX="669.0" layoutY="211.0" prefHeight="325.0" prefWidth="288.0" promptText="Descriptie" wrapText="true" />
    </children>
 </Pane>

@@ -1,4 +1,5 @@
 package sample.JavaFX;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,6 +12,8 @@ import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sample.Core.AppManager;
+import sample.Enums.Kleur;
+import sample.Enums.Status;
 import sample.Models.*;
 import java.util.ArrayList;
 
@@ -23,22 +26,11 @@ public class BoekController {
     @FXML private Button btnLeenUit;
     @FXML private Label lblIngelogdAls, lblMessageBL;
     @FXML private ListView<String> lsBoekenLijst, lsMijnBoeken, lsGeleendeBoeken, lsBeschikbareExemplaren, lsGebruikersLijst;
-    @FXML private TextField tbTitel, tbDescriptie, tbTotAantal, tbBeschikbaar,tbAuteurs, tbUitgever, tbNaam, tbWoonplaats, tbEmail, tbTelefoonNr, tbBeschrijving;
+    @FXML private TextArea tbDescriptie, tbBeschrijving;
+    @FXML private TextField tbTitel, tbTotAantal, tbBeschikbaar,tbAuteurs, tbUitgever, tbNaam, tbWoonplaats, tbEmail, tbTelefoonNr;
     @FXML private ComboBox cbAuteurs, cbUitgever;
 
-    public void showWindow(ActionEvent e){
-        Scene gebruikersscherm = new Scene(scherm);
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.setScene(gebruikersscherm);
-        stage.show();
-    }
-
-    @FXML public void initialize() throws Exception {
-        updateLists();
-        lblIngelogdAls.setText("Ingelogd als: " + gebruiker.getGebruikersnaam());
-    }
-
-    @FXML public void boekToevoegen(ActionEvent e) throws Exception {
+    public void boekToevoegen(ActionEvent e) throws Exception {
         if (!tbTitel.getText().trim().equals("") && !tbDescriptie.getText().trim().equals("") && !tbTotAantal.getText().trim().equals("") && !tbAuteurs.getText().trim().equals("") && !tbUitgever.getText().trim().equals("")) {
             Uitgever uitgever;
             ArrayList<Auteur> auteursListBoek = new ArrayList<>();
@@ -64,86 +56,96 @@ public class BoekController {
                 appManager.addUitgever(uitgever);
             }
             appManager.addBoek(new Boek(tbTitel.getText(), tbDescriptie.getText(), auteursListBoek, uitgever), tbTotAantal.getText());
-            showMessage("GREEN", "Boek succesvol toegevoegd.");
+            showMessage(Kleur.GREEN, "Boek succesvol toegevoegd.");
         }
-        else showMessage("RED", "Vul alle benodigde velden in aub.");
+        else showMessage(Kleur.RED, "Vul alle benodigde velden in aub.");
     }
 
-    @FXML public void leenUit(ActionEvent e) throws Exception {
+    public void leenUit(ActionEvent e) throws Exception {
         if (lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
             int volgnummer = Integer.parseInt(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem());
             Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
             appManager.leenUit(volgnummer, gebruiker);
             updateLists();
-            showMessage("GREEN", "Boek succesvol uitgeleend aan: " + gebruiker.getGebruikersnaam() + ".");
+            showMessage(Kleur.GREEN, "Boek succesvol uitgeleend aan: " + gebruiker.getGebruikersnaam() + ".");
         }
-        else showMessage("RED", "Selecteer eerst een boekexemplaar en gebruiker uit de lijst.");
+        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar en gebruiker uit de lijst.");
     }
 
-    @FXML public void retourneer(ActionEvent e) throws Exception {
+    public void retourneer(ActionEvent e) throws Exception {
         if (lsGeleendeBoeken.getSelectionModel().getSelectedItem() != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
             int volgnummer = Integer.parseInt(lsGeleendeBoeken.getSelectionModel().getSelectedItem());
             Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
             appManager.retourneer(volgnummer, gebruiker);
             updateLists();
-            showMessage("GREEN", "Boek succesvol geretourneerd.");
+            showMessage(Kleur.GREEN, "Boek succesvol geretourneerd.");
         }
-        else showMessage("RED", "Selecteer eerst een boekexemplaar en gebruiker uit de lijsten.");
+        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar en gebruiker uit de lijsten.");
     }
 
-    @FXML public void beschrijvingWijzigen(ActionEvent e) throws Exception {
+    public void beschrijvingWijzigen(ActionEvent e) throws Exception {
         if (lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null) {
             int volgnummer = Integer.parseInt(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem());
             String beschrijving = tbBeschrijving.getText();
             appManager.setBeschrijving(volgnummer, beschrijving);
-            showMessage("GREEN", "Beschrijving succesvol gewijzigd.");
+            showMessage(Kleur.GREEN, "Beschrijving succesvol gewijzigd.");
         }
-        else showMessage("RED", "Selecteer eerst een boekexemplaar uit de lijst.");
+        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar uit de lijst.");
     }
 
-    @FXML public void loguit(ActionEvent e) throws Exception {
+    public void showWindow(ActionEvent e){
+        Scene gebruikersscherm = new Scene(scherm);
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        stage.setScene(gebruikersscherm);
+        stage.show();
+    }
+    public void initialize() throws Exception {
+        updateLists();
+        appManager.boekController = this;
+        lblIngelogdAls.setText("Ingelogd als: " + gebruiker.getGebruikersnaam());
+    }
+    public void loguit(ActionEvent e) throws Exception {
         appManager.loguit();
         scherm = FXMLLoader.load(getClass().getResource("Hoofdscherm.fxml"));
         showWindow(e);
     }
-
-    @FXML public void openMijnBoeken(ActionEvent e) throws Exception {
+    public void openMijnBoeken(ActionEvent e) throws Exception {
         scherm = FXMLLoader.load(getClass().getResource("MijnBoeken (Klant).fxml"));
         showWindow(e);
     }
-    @FXML public void openMijnProfiel(ActionEvent e) throws Exception {
-        if (appManager.getGebruiker().getStatus().equals("Medewerker")) {
+    public void openMijnProfiel(ActionEvent e) throws Exception {
+        if (appManager.getGebruiker().getStatus() == Status.MEDEWERKER) {
             scherm = FXMLLoader.load(getClass().getResource("MijnProfiel (Medewerker).fxml"));
         }
         else scherm = FXMLLoader.load(getClass().getResource("MijnProfiel (Klant).fxml"));
         showWindow(e);
     }
-    @FXML public void openBoekenLijst(ActionEvent e) throws Exception {
-        if (appManager.getGebruiker().getStatus().equals("Medewerker")) {
+    public void openBoekenLijst(ActionEvent e) throws Exception {
+        if (appManager.getGebruiker().getStatus() == Status.MEDEWERKER) {
             scherm = FXMLLoader.load(getClass().getResource("Boekenlijst (Medewerker).fxml"));
         }
         else scherm = FXMLLoader.load(getClass().getResource("Boekenlijst (Klant).fxml"));
         showWindow(e);
     }
-    @FXML public void openBoekToevoegen(ActionEvent e) throws Exception {
+    public void openBoekToevoegen(ActionEvent e) throws Exception {
         scherm = FXMLLoader.load(getClass().getResource("BoekToevoegen (Medewerker).fxml"));
         showWindow(e);
     }
-    @FXML public void openGebruikerslijst(ActionEvent e) throws Exception {
+    public void openGebruikerslijst(ActionEvent e) throws Exception {
         scherm = FXMLLoader.load(getClass().getResource("GebruikersLijst (Medewerker).fxml"));
         showWindow(e);
     }
-    @FXML public void selecteerAuteur(ActionEvent e) throws Exception {
+    public void selecteerAuteur(ActionEvent e) throws Exception {
         if (!tbAuteurs.getText().contains(cbAuteurs.getSelectionModel().getSelectedItem().toString())) {
             if (tbAuteurs.getText().equals(""))
                 tbAuteurs.setText(cbAuteurs.getSelectionModel().getSelectedItem().toString());
             else tbAuteurs.setText(tbAuteurs.getText() + ", " + cbAuteurs.getSelectionModel().getSelectedItem().toString());
         }
     }
-    @FXML public void selecteerUitgever(ActionEvent e) throws Exception {
+    public void selecteerUitgever(ActionEvent e) throws Exception {
         tbUitgever.setText(cbUitgever.getSelectionModel().getSelectedItem().toString());
     }
-    @FXML public void getSelectedItemInfo() throws Exception {
+    public void getSelectedItemInfo() throws Exception {
         if (tbBeschrijving != null) {
             tbBeschrijving.setText("");
         }
@@ -160,6 +162,7 @@ public class BoekController {
             tbBeschrijving.setText(boek.getBeschrijving());
         }
         if (lsBeschikbareExemplaren != null && lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null) {
+            tbBeschrijving.setText("");
             BoekExemplaar boek = appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem())));
             tbBeschrijving.setText(boek.getBeschrijving());
         }
@@ -193,8 +196,11 @@ public class BoekController {
                 }
             }
         }
+        if (lsBeschikbareExemplaren != null && lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() == null) {
+            tbBeschrijving.setText("");
+        }
     }
-    @FXML public void updateLists() throws Exception {
+    public void updateLists() throws Exception {
         if (lsBeschikbareExemplaren != null && lsBoekenLijst != null && lsBoekenLijst.getSelectionModel().getSelectedItem() != null) {
             beschikbareExemplaren = FXCollections.observableArrayList(appManager.getBeschikbareExemplaren(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem())));
             lsBeschikbareExemplaren.setItems(beschikbareExemplaren);
@@ -226,10 +232,47 @@ public class BoekController {
             cbUitgever.setItems(uitgevers);
         }
     }
-    @FXML public void showMessage(String kleur, String message) throws Exception {
-        if (kleur.equals("RED")) lblMessageBL.setTextFill(Color.RED);
-        if (kleur.equals("GREEN")) lblMessageBL.setTextFill(Color.GREEN);
+    public void updateBoekList(ArrayList<String> newList) {
+        if (lsBoekenLijst != null) {
+            Platform.runLater(() -> {
+                try {
+                    showMessage(Kleur.GREEN, "Er is een nieuw boek bijgekomen!");
+                    ObservableList<String> boekenlijst = FXCollections.observableArrayList(newList);
+                    lsBoekenLijst.setItems(boekenlijst);
+                }
+                catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            });
+        }
+    }
+    public void updateGebruikersList(ArrayList<String> newList) {
+        if (lsGebruikersLijst != null) {
+            Platform.runLater(() -> {
+                try {
+                    showMessage(Kleur.GREEN, "Er is een nieuwe gebruiker bijgekomen!");
+                    ObservableList<String> gebruikerslijst = FXCollections.observableArrayList(newList);
+                    lsGebruikersLijst.setItems(gebruikerslijst);
+                }
+                catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            });
+        }
+    }
+    public void showMessage(Kleur kleur, String message) throws Exception {
+        if (kleur == Kleur.RED) lblMessageBL.setTextFill(Color.RED);
+        if (kleur == Kleur.GREEN) lblMessageBL.setTextFill(Color.GREEN);
         lblMessageBL.setText(message);
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() -> lblMessageBL.setText(""));
+                    }
+                },
+                5000
+        );
     }
     public BoekController() throws Exception { }
 }

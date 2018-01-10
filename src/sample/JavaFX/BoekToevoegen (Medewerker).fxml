@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.BoekController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.BoekController">
    <children>
       <Button fx:id="btnLoguit" layoutX="20.0" layoutY="607.0" mnemonicParsing="false" onAction="#loguit" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: Red;" text="Loguit" textFill="WHITE">
          <effect>
@@ -48,10 +49,9 @@
          </effect>
       </Button>
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
-      <Label layoutX="447.0" layoutY="191.0" text="Titel:" />
-      <TextField fx:id="tbTitel" layoutX="497.0" layoutY="186.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
-      <Label layoutX="408.0" layoutY="223.0" text="Descriptie:" />
-      <TextField fx:id="tbDescriptie" alignment="TOP_LEFT" layoutX="497.0" layoutY="223.0" prefHeight="118.0" prefWidth="288.0" promptText="Descriptie" />
+      <Label layoutX="450.0" layoutY="191.0" text="Titel:" />
+      <TextField fx:id="tbTitel" layoutX="499.0" layoutY="186.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
+      <Label layoutX="411.0" layoutY="223.0" text="Descriptie:" />
       <Label layoutX="410.0" layoutY="353.0" text="Tot. aantal:" />
       <TextField fx:id="tbTotAantal" layoutX="499.0" layoutY="348.0" prefHeight="31.0" prefWidth="288.0" promptText="Totaal aantal exemplaren" />
       <Label layoutX="434.0" layoutY="392.0" text="Auteur:" />
@@ -80,9 +80,10 @@
          </effect>
       </Button>
       <ComboBox fx:id="cbUitgever" layoutX="499.0" layoutY="466.0" onAction="#selecteerUitgever" prefHeight="31.0" prefWidth="288.0" promptText="Lijst van eerdere uitgevers" />
-      <Label fx:id="lblMessageBL" alignment="CENTER" layoutX="315.0" layoutY="131.0" prefHeight="21.0" prefWidth="652.0">
+      <Label fx:id="lblMessageBL" alignment="CENTER" layoutX="280.0" layoutY="113.0" prefHeight="21.0" prefWidth="712.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Label>
+      <TextArea fx:id="tbDescriptie" layoutX="499.0" layoutY="223.0" prefHeight="118.0" prefWidth="288.0" promptText="Descriptie" wrapText="true" />
    </children>
 </Pane>

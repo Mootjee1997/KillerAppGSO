@@ -1,14 +1,16 @@
 package sample.Core;
 import fontys.IRemotePropertyListener;
-import fontys.IRemotePublisherForListener;
+import sample.JavaFX.BoekController;
+import sample.JavaFX.GebruikerController;
 import sample.Models.*;
 import sample.Server.*;
 import java.beans.PropertyChangeEvent;
+import java.io.Serializable;
 import java.rmi.Naming;
-import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class AppManager implements IRemotePropertyListener {
+public class AppManager extends UnicastRemoteObject implements IRemotePropertyListener, Serializable {
     private static AppManager appManager = null;
     public static AppManager getInstance() throws Exception {
         if (appManager == null) {
@@ -16,18 +18,16 @@ public class AppManager implements IRemotePropertyListener {
         }
         return appManager;
     }
-    private IRemotePublisherForListener publisherForListener;
+    public AppManager() throws Exception { }
     private IServer server;
     private Gebruiker gebruiker;
-
-    public AppManager() throws Exception {
-        server = (IServer) Naming.lookup("rmi://localhost:1099/Server");
-        getGebruikers();
-        getBoeken();
-        getBoekExemplaren();
-    }
+    public BoekController boekController;
+    public GebruikerController gebruikerController;
 
     public Gebruiker login(String gebruikernaam, String wachtwoord) throws Exception {
+        server = (IServer) Naming.lookup("rmi://localhost:1099/Server");
+        server.subscribePublisher(this, "BoekAdd");
+        server.subscribePublisher(this, "GebruikerAdd");
         return gebruiker = server.login(gebruikernaam, wachtwoord);
     }
     public void registreer(Gebruiker gebruiker) throws  Exception {
@@ -76,9 +76,6 @@ public class AppManager implements IRemotePropertyListener {
     public ArrayList<String> getBoeken() throws Exception {
         return server.getBoeken();
     }
-    public ArrayList<String> getBoekExemplaren() throws Exception {
-        return server.getBoekExemplaren();
-    }
     public ArrayList<String> getGebruikers() throws Exception {
         return server.getGebruikers();
     }
@@ -102,7 +99,17 @@ public class AppManager implements IRemotePropertyListener {
         gebruiker = null;
     }
 
-    public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
-
+    public void propertyChange(PropertyChangeEvent evt) {
+        try {
+            if (evt.getPropertyName().equals("BoekAdd")) {
+                boekController.updateBoekList((ArrayList<String>) evt.getNewValue());
+            }
+            if (evt.getPropertyName().equals("GebruikerAdd")) {
+                boekController.updateGebruikersList((ArrayList<String>) evt.getNewValue());
+            }
+        }
+        catch (Exception ex) {
+            System.out.println(ex);
+        }
     }
 }

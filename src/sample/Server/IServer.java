@@ -1,4 +1,5 @@
 package sample.Server;
+import fontys.IRemotePropertyListener;
 import sample.Models.*;
 import java.rmi.Remote;;
 import java.util.ArrayList;
@@ -25,4 +26,5 @@ public interface IServer extends Remote {
     Uitgever zoekUitgever(String naam) throws Exception;
     Gebruiker zoekGebruiker(String gebruikernaam) throws Exception;
     BoekExemplaar zoekBoekExemplaar(int volgnummer) throws Exception;
+    void subscribePublisher(IRemotePropertyListener listener, String property) throws Exception;
 }

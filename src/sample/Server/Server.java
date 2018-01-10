@@ -1,7 +1,9 @@
 package sample.Server;
+import fontys.IRemotePropertyListener;
 import fontys.RemotePublisher;
 import sample.Contexts.IBoekContext;
 import sample.Contexts.IGebruikerContext;
+import sample.Enums.Status;
 import sample.Models.*;
 import sample.Repositories.BoekRepository;
 import sample.Repositories.GebruikerRepository;
@@ -17,9 +19,9 @@ public class Server extends UnicastRemoteObject implements IServer {
     private RemotePublisher publisher;
     private ArrayList<Auteur> auteurs;
     private ArrayList<Uitgever> uitgevers;
-    private ArrayList<Boek> boeken;
-    private ArrayList<BoekExemplaar> boekExemplaren;
     private ArrayList<Gebruiker> gebruikers;
+    private ArrayList<BoekExemplaar> boekExemplaren;
+    private ArrayList<Boek> boeken;
     private BoekRepository boekRepository = new BoekRepository(new IBoekContext());
     private GebruikerRepository gebruikerRepository = new GebruikerRepository(new IGebruikerContext());
 
@@ -27,16 +29,20 @@ public class Server extends UnicastRemoteObject implements IServer {
         super();
         try {
             registry = createRegistry();
+            publisher = new RemotePublisher();
 
             if (registry != null) {
-                registry.rebind("Server", this);
+                IServer server = this;
+                registry.rebind("Server", server);
+                publisher.registerProperty("BoekAdd");
+                publisher.registerProperty("GebruikerAdd");
                 System.out.println("Server: bound and ready for use.");
+                getAuteurs();
+                getUitgevers();
+                getGebruikers();
+                getBoekExemplaren();
+                getBoeken();
             }
-            getGebruikers();
-            getAuteurs();
-            getUitgevers();
-            getBoekExemplaren();
-            getBoeken();
         }
         catch (Exception e){
             System.out.println("Server could not be bound.");
@@ -60,6 +66,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     public int registreer(Gebruiker gebruiker) throws Exception {
         gebruiker.setId(gebruikerRepository.registreer(gebruiker));
         this.gebruikers.add(gebruiker);
+        publisher.inform("GebruikerAdd", getGebruikers(), getGebruikers());
         return gebruiker.getId();
     }
 
@@ -72,7 +79,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     public boolean retourneer(int volgnummer, Gebruiker gebruiker) throws Exception {
         BoekExemplaar boekExemplaar = zoekBoekExemplaar(volgnummer);
         boekExemplaar.setBeschikbaar(true);
-        zoekGebruiker(gebruiker.getGebruikersnaam()).deleteGeleendeBoek(boekExemplaar);
+        zoekGebruiker(gebruiker.getGebruikersnaam()).deleteGeleendeBoek(volgnummer);
         return boekRepository.retourneer(boekExemplaar, gebruiker);
     }
 
@@ -100,6 +107,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             addBoekExemplaar(boek);
         }
         this.boeken.add(boek);
+        publisher.inform("BoekAdd", getBoeken(), getBoeken());
     }
 
     public Auteur zoekAuteur(String naam) throws Exception {
@@ -163,18 +171,14 @@ public class Server extends UnicastRemoteObject implements IServer {
         if (gebruikers == null) { gebruikers = gebruikerRepository.getGebruikers(); }
         ArrayList<String> gebruikerslist = new ArrayList<>();
         for (Gebruiker gebruiker : gebruikers) {
-            if (gebruiker.getStatus().equals("Klant")) {
+            if (gebruiker.getStatus() == Status.KLANT) {
                 gebruikerslist.add(gebruiker.getGebruikersnaam());
             }
         }
         return gebruikerslist;
     }
     public ArrayList<String> getGeleendeBoeken(Gebruiker gebruiker) throws Exception {
-        ArrayList<String> geleendeBoeken = new ArrayList<>();
-        for (BoekExemplaar boek : gebruiker.getGeleendeBoeken()) {
-            geleendeBoeken.add(String.valueOf(boek.getVolgnummer()));
-        }
-        return geleendeBoeken;
+        return zoekGebruiker(gebruiker.getGebruikersnaam()).getGeleendeBoeken();
     }
     public ArrayList<String> getBeschikbareExemplaren(String titel) throws Exception {
         ArrayList<String> beschikbareExemplaren = new ArrayList<>();
@@ -201,5 +205,9 @@ public class Server extends UnicastRemoteObject implements IServer {
     public boolean setBeschrijving(int volgnummer, String beschrijving) throws Exception {
         zoekBoekExemplaar(volgnummer).setBeschrijving(beschrijving);
         return boekRepository.setBeschrijving(zoekBoekExemplaar(volgnummer));
+    }
+
+    public void subscribePublisher(IRemotePropertyListener listener, String property) throws Exception {
+        publisher.subscribeRemoteListener(listener, property);
     }
 }

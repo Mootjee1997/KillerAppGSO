@@ -47,32 +47,32 @@
             <Font size="40.0" />
          </font>
       </Label>
-      <TextField fx:id="tbNaam" layoutX="468.0" layoutY="200.0" prefHeight="31.0" prefWidth="338.0" promptText="Naam">
+      <TextField fx:id="tbNaam" layoutX="489.0" layoutY="194.0" prefHeight="31.0" prefWidth="338.0" promptText="Naam">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbTelefoonNr" layoutX="468.0" layoutY="375.0" prefHeight="31.0" prefWidth="338.0" promptText="Telefoonnummer">
+      <TextField fx:id="tbTelefoonNr" layoutX="489.0" layoutY="369.0" prefHeight="31.0" prefWidth="338.0" promptText="Telefoonnummer">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbEmail" layoutX="468.0" layoutY="331.0" prefHeight="31.0" prefWidth="338.0" promptText="Email">
+      <TextField fx:id="tbEmail" layoutX="489.0" layoutY="325.0" prefHeight="31.0" prefWidth="338.0" promptText="Email">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <TextField fx:id="tbWoonplaats" layoutX="468.0" layoutY="288.0" prefHeight="31.0" prefWidth="338.0" promptText="Woonplaats">
+      <TextField fx:id="tbWoonplaats" layoutX="489.0" layoutY="282.0" prefHeight="31.0" prefWidth="338.0" promptText="Woonplaats">
          <effect>
             <Glow />
          </effect>
       </TextField>
-      <Label layoutX="415.0" layoutY="205.0" text="Naam:" />
-      <Label layoutX="379.0" layoutY="379.0" text="TelefoonNr.:" />
-      <Label layoutX="417.0" layoutY="336.0" text="Email:" />
-      <Label layoutX="377.0" layoutY="293.0" text="Woonplaats:" />
-      <Label layoutX="371.0" layoutY="249.0" text="Wachtwoord:" />
-      <Button fx:id="btnProfielWijzigen" layoutX="534.0" layoutY="462.0" mnemonicParsing="false" onAction="#wijzigProfiel" prefHeight="44.0" prefWidth="209.0" style="" text="Wijzigingen opslaan">
+      <Label layoutX="436.0" layoutY="199.0" text="Naam:" />
+      <Label layoutX="400.0" layoutY="373.0" text="TelefoonNr.:" />
+      <Label layoutX="438.0" layoutY="330.0" text="Email:" />
+      <Label layoutX="398.0" layoutY="287.0" text="Woonplaats:" />
+      <Label layoutX="392.0" layoutY="243.0" text="Wachtwoord:" />
+      <Button fx:id="btnProfielWijzigen" layoutX="554.0" layoutY="463.0" mnemonicParsing="false" onAction="#wijzigProfiel" prefHeight="44.0" prefWidth="209.0" style="" text="Wijzigingen opslaan">
          <effect>
             <Glow />
          </effect>
@@ -82,25 +82,25 @@
             <Glow />
          </effect>
       </Button>
-      <Label fx:id="lblmessage" alignment="CENTER" layoutX="302.0" layoutY="174.0" prefHeight="21.0" prefWidth="670.0">
+      <Label fx:id="lblmessage" alignment="CENTER" layoutX="280.0" layoutY="113.0" prefHeight="21.0" prefWidth="712.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Label>
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
-      <PasswordField fx:id="tbWachtwoord" layoutX="468.0" layoutY="244.0" prefHeight="31.0" prefWidth="338.0" promptText="Nieuw wachtwoord" />
+      <PasswordField fx:id="tbWachtwoord" layoutX="489.0" layoutY="238.0" prefHeight="31.0" prefWidth="338.0" promptText="Nieuw wachtwoord" />
       <Button layoutX="20.0" layoutY="247.0" mnemonicParsing="false" onAction="#openBoekToevoegen" prefHeight="44.0" prefWidth="209.0" style="" text="Boek toevoegen">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <ImageView fitHeight="31.0" fitWidth="31.0" layoutX="819.0" layoutY="244.0" onMousePressed="#showPassword" onMouseReleased="#showPassword" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="31.0" fitWidth="31.0" layoutX="838.0" layoutY="238.0" onMousePressed="#showPassword" onMouseReleased="#showPassword" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@Eye.png" />
          </image>
       </ImageView>
-      <Label layoutX="327.0" layoutY="423.0" text="Huidig wachtwoord:" />
-      <PasswordField fx:id="tbPasswordVerif" layoutX="468.0" layoutY="418.0" prefHeight="31.0" prefWidth="338.0" promptText="Huidig wachtwoord ter bevestiging" />
-      <TextField fx:id="tbWachtwoordVisible" layoutX="468.0" layoutY="244.0" prefHeight="31.0" prefWidth="338.0" promptText="Nieuw wachtwoord" visible="false">
+      <Label layoutX="348.0" layoutY="417.0" text="Huidig wachtwoord:" />
+      <PasswordField fx:id="tbPasswordVerif" layoutX="489.0" layoutY="412.0" prefHeight="31.0" prefWidth="338.0" promptText="Huidig wachtwoord ter bevestiging" />
+      <TextField fx:id="tbWachtwoordVisible" layoutX="489.0" layoutY="238.0" prefHeight="31.0" prefWidth="338.0" promptText="Nieuw wachtwoord" visible="false">
          <effect>
             <Glow />
          </effect>
