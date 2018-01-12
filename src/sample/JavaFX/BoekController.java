@@ -22,8 +22,9 @@ public class BoekController {
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
     private ObservableList<String> boeken, auteurs, uitgevers, gebruikers, mijnBoeken, beschikbareExemplaren, geleendeBoeken;
+    private boolean voteTitel, voteDescriptie, voteTotAantal, voteAuteurs, voteUitgever;
 
-    @FXML private Button btnLeenUit;
+    @FXML private Button btnLeenUit, btnToevoegenBoek;
     @FXML private Label lblIngelogdAls, lblMessageBL;
     @FXML private ListView<String> lsBoekenLijst, lsMijnBoeken, lsGeleendeBoeken, lsBeschikbareExemplaren, lsGebruikersLijst;
     @FXML private TextArea tbDescriptie, tbBeschrijving;
@@ -56,9 +57,9 @@ public class BoekController {
                 appManager.addUitgever(uitgever);
             }
             appManager.addBoek(new Boek(tbTitel.getText(), tbDescriptie.getText(), auteursListBoek, uitgever), tbTotAantal.getText());
-            showMessage(Kleur.GREEN, "Boek succesvol toegevoegd.");
+            showMessage(Kleur.GREEN, "Boek succesvol toegevoegd.", 2500);
         }
-        else showMessage(Kleur.RED, "Vul alle benodigde velden in aub.");
+        else showMessage(Kleur.RED, "Vul alle benodigde velden in aub.", 2500);
     }
 
     public void leenUit(ActionEvent e) throws Exception {
@@ -67,9 +68,9 @@ public class BoekController {
             Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
             appManager.leenUit(volgnummer, gebruiker);
             updateLists();
-            showMessage(Kleur.GREEN, "Boek succesvol uitgeleend aan: " + gebruiker.getGebruikersnaam() + ".");
+            showMessage(Kleur.GREEN, "Boek succesvol uitgeleend aan: " + gebruiker.getGebruikersnaam() + ".", 2500);
         }
-        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar en gebruiker uit de lijst.");
+        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar en gebruiker uit de lijst.", 2500);
     }
 
     public void retourneer(ActionEvent e) throws Exception {
@@ -78,9 +79,9 @@ public class BoekController {
             Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
             appManager.retourneer(volgnummer, gebruiker);
             updateLists();
-            showMessage(Kleur.GREEN, "Boek succesvol geretourneerd.");
+            showMessage(Kleur.GREEN, "Boek succesvol geretourneerd.", 2500);
         }
-        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar en gebruiker uit de lijsten.");
+        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar en gebruiker uit de lijsten.", 2500);
     }
 
     public void beschrijvingWijzigen(ActionEvent e) throws Exception {
@@ -88,19 +89,14 @@ public class BoekController {
             int volgnummer = Integer.parseInt(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem());
             String beschrijving = tbBeschrijving.getText();
             appManager.setBeschrijving(volgnummer, beschrijving);
-            showMessage(Kleur.GREEN, "Beschrijving succesvol gewijzigd.");
+            showMessage(Kleur.GREEN, "Beschrijving succesvol gewijzigd.", 2500);
         }
-        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar uit de lijst.");
+        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar uit de lijst.", 2500);
     }
 
-    public void showWindow(ActionEvent e){
-        Scene gebruikersscherm = new Scene(scherm);
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.setScene(gebruikersscherm);
-        stage.show();
-    }
     public void initialize() throws Exception {
         updateLists();
+        startListeners();
         appManager.boekController = this;
         lblIngelogdAls.setText("Ingelogd als: " + gebruiker.getGebruikersnaam());
     }
@@ -236,7 +232,7 @@ public class BoekController {
         if (lsBoekenLijst != null) {
             Platform.runLater(() -> {
                 try {
-                    showMessage(Kleur.GREEN, "Er is een nieuw boek bijgekomen!");
+                    showMessage(Kleur.GREEN, "Er is een nieuw boek bijgekomen!", 6000);
                     ObservableList<String> boekenlijst = FXCollections.observableArrayList(newList);
                     lsBoekenLijst.setItems(boekenlijst);
                 }
@@ -250,7 +246,7 @@ public class BoekController {
         if (lsGebruikersLijst != null) {
             Platform.runLater(() -> {
                 try {
-                    showMessage(Kleur.GREEN, "Er is een nieuwe gebruiker bijgekomen!");
+                    showMessage(Kleur.GREEN, "Er is een nieuwe gebruiker bijgekomen!", 6000);
                     ObservableList<String> gebruikerslijst = FXCollections.observableArrayList(newList);
                     lsGebruikersLijst.setItems(gebruikerslijst);
                 }
@@ -260,7 +256,13 @@ public class BoekController {
             });
         }
     }
-    public void showMessage(Kleur kleur, String message) throws Exception {
+    public void showWindow(ActionEvent e){
+        Scene gebruikersscherm = new Scene(scherm);
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        stage.setScene(gebruikersscherm);
+        stage.show();
+    }
+    public void showMessage(Kleur kleur, String message, int ms) {
         if (kleur == Kleur.RED) lblMessageBL.setTextFill(Color.RED);
         if (kleur == Kleur.GREEN) lblMessageBL.setTextFill(Color.GREEN);
         lblMessageBL.setText(message);
@@ -271,8 +273,114 @@ public class BoekController {
                         Platform.runLater(() -> lblMessageBL.setText(""));
                     }
                 },
-                5000
+                ms
         );
+    }
+    public void startListeners() throws Exception {
+        if (btnToevoegenBoek != null) {
+            if (tbTitel != null && lblMessageBL != null) {
+                tbTitel.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                    if (tbTitel.getText().length() > 0) {
+                        if (tbTitel.getText().length() > 1) {
+                            lblMessageBL.setText("");
+                            tbTitel.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                            enable(1);
+                        } else {
+                            showMessage(Kleur.RED, "Titel moet minimaal 2 letters hebben.", 2500);
+                            tbTitel.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                            disable(1);
+                        }
+                    } else {
+                        tbTitel.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
+                        disable(1);
+                    }
+                }));
+            }
+            if (tbDescriptie != null && lblMessageBL != null) {
+                tbDescriptie.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                    if (tbDescriptie.getText().length() > 0) {
+                        if (tbDescriptie.getText().length() > 10) {
+                            lblMessageBL.setText("");
+                            tbDescriptie.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                            enable(2);
+                        } else {
+                            showMessage(Kleur.RED, "Voer minimaal een descriptie in van 10 tekens.", 2500);
+                            tbDescriptie.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                            disable(2);
+                        }
+                    } else {
+                        tbDescriptie.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
+                        disable(2);
+                    }
+                }));
+            }
+            if (tbTotAantal != null && lblMessageBL != null) {
+                tbTotAantal.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                    if (tbTotAantal.getText().matches("[0-9]+")) {
+                        if (tbTotAantal.getText().length() > 0 && Integer.parseInt(tbTotAantal.getText()) > 0 && Integer.parseInt(tbTotAantal.getText()) < 21) {
+                            tbTotAantal.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                            enable(3);
+                        } else {
+                            showMessage(Kleur.RED, "Voer aub een geldig aantal exemplaren in (1-20)", 3500);
+                            tbTotAantal.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                            disable(3);
+                        }
+                    }
+                    else {
+                        showMessage(Kleur.RED, "Voer aub een geldige waarde in.", 3500);
+                        tbTotAantal.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                        disable(3);
+                    }
+                }));
+            }
+            if (tbAuteurs != null && lblMessageBL != null) {
+                tbAuteurs.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                    if (tbAuteurs.getText().length() > 0) {
+                        tbAuteurs.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                        enable(4);
+                    }
+                    else {
+                        showMessage(Kleur.RED, "Voer aub een Auteur in of selecteer er een uit de lijst.", 5500);
+                        tbAuteurs.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                        disable(4);
+                    }
+                }));
+            }
+            if (tbUitgever != null && lblMessageBL != null) {
+                tbUitgever.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                    if (tbUitgever.getText().length() > 0) {
+                        tbUitgever.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                        enable(5);
+                    }
+                    else {
+                        showMessage(Kleur.RED, "Voer aub een Uitgever in of selecteer er een uit de lijst.", 5500);
+                        tbUitgever.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                        disable(5);
+                    }
+                }));
+            }
+        }
+    }
+    public void enable(int x) {
+        if (btnToevoegenBoek != null) {
+            if (x == 1) voteTitel = true;
+            if (x == 2) voteDescriptie = true;
+            if (x == 3) voteTotAantal = true;
+            if (x == 4) voteAuteurs = true;
+            if (x == 5) voteUitgever = true;
+            if (voteTitel && voteDescriptie && voteAuteurs && voteUitgever) btnToevoegenBoek.setDisable(false);
+            else btnToevoegenBoek.setDisable(true);
+        }
+    }
+    public void disable(int x) {
+        if (btnToevoegenBoek != null) {
+            if (x == 1) voteTitel = false;
+            if (x == 2) voteDescriptie = false;
+            if (x == 3) voteTotAantal = false;
+            if (x == 4) voteAuteurs = false;
+            if (x == 5) voteUitgever = false;
+            btnToevoegenBoek.setDisable(true);
+        }
     }
     public BoekController() throws Exception { }
 }

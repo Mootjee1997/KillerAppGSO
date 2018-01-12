@@ -18,16 +18,17 @@ public class AppManager extends UnicastRemoteObject implements IRemotePropertyLi
         }
         return appManager;
     }
-    public AppManager() throws Exception { }
+    public AppManager() throws Exception {
+        server = (IServer) Naming.lookup("rmi://localhost:1099/Server");
+        server.subscribePublisher(this, "BoekAdd");
+        server.subscribePublisher(this, "GebruikerAdd");
+    }
     private IServer server;
     private Gebruiker gebruiker;
     public BoekController boekController;
     public GebruikerController gebruikerController;
 
     public Gebruiker login(String gebruikernaam, String wachtwoord) throws Exception {
-        server = (IServer) Naming.lookup("rmi://localhost:1099/Server");
-        server.subscribePublisher(this, "BoekAdd");
-        server.subscribePublisher(this, "GebruikerAdd");
         return gebruiker = server.login(gebruikernaam, wachtwoord);
     }
     public void registreer(Gebruiker gebruiker) throws  Exception {
@@ -64,7 +65,7 @@ public class AppManager extends UnicastRemoteObject implements IRemotePropertyLi
         return server.zoekBoekExemplaar(volgnummer);
     }
     public Gebruiker zoekGebruiker(String gebruikernaam) throws Exception {
-        return server.zoekGebruiker(gebruikernaam);
+        return server.zoekGebruiker(gebruikernaam.toLowerCase());
     }
 
     public ArrayList<String> getAuteurs() throws Exception {

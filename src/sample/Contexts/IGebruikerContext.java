@@ -13,7 +13,6 @@ public class IGebruikerContext {
     private Database db = new Database();
     private ResultSet rs = null;
     private String query;
-    private int id = 0;
 
     public Gebruiker login(String gebruikernaam, String wachtwoord) throws Exception {
         try {
@@ -62,7 +61,7 @@ public class IGebruikerContext {
             ps.execute();
 
             rs = ps.getGeneratedKeys();
-            if (rs.next()) return id = rs.getInt(1);
+            if (rs.next()) return rs.getInt(1);
         }
         catch (Exception ex) {
             System.out.println(ex);

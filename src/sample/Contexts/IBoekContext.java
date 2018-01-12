@@ -10,8 +10,6 @@ public class IBoekContext {
     private Database db = new Database();
     private ResultSet rs = null;
     private String query;
-    private int id = 0;
-
 
     public boolean leenUit(BoekExemplaar boek, Gebruiker gebruiker) throws Exception {
         query = "INSERT INTO `Gebruiker-Boekexemplaar` (GebruikerID, BoekID) VALUES (?, ?)";
@@ -93,7 +91,7 @@ public class IBoekContext {
             ps.setInt(2, volgnr);
             ps.execute();
             rs = ps.getGeneratedKeys();
-            if (rs.next()) return id = rs.getInt(1);
+            if (rs.next()) return rs.getInt(1);
         }
         catch (Exception ex) {
             System.out.println(ex);

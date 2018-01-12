@@ -1,7 +1,6 @@
 package sample.Models;
 import sample.Core.AppManager;
 import sample.Enums.Status;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 

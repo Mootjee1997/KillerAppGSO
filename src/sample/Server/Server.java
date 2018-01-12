@@ -7,6 +7,8 @@ import sample.Enums.Status;
 import sample.Models.*;
 import sample.Repositories.BoekRepository;
 import sample.Repositories.GebruikerRepository;
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,6 +16,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class Server extends UnicastRemoteObject implements IServer {
+    private boolean portTaken = false;
     private int port = 1099;
     private Registry registry = null;
     private RemotePublisher publisher;
@@ -49,11 +52,15 @@ public class Server extends UnicastRemoteObject implements IServer {
             e.printStackTrace();
         }
     }
-    public Registry createRegistry(){
+    public Registry createRegistry() throws IOException, NotBoundException {
         try {
-            registry = LocateRegistry.createRegistry(port);
-            System.out.println("Server: created Registry on portnumber: " + port + ".");
-        } catch (RemoteException e) {
+            if (portTaken == false) {
+                registry = LocateRegistry.createRegistry(port);
+                System.out.println("Server: created Registry on portnumber: " + port + ".");
+            }
+            else System.out.println("Port: 1099 is already in use, close the previous Server please.");
+        }
+        catch (RemoteException e) {
             System.out.println("Could not create Registry.");
             e.printStackTrace();
         }
@@ -84,9 +91,11 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
 
     public boolean addAuteur(Auteur auteur) throws Exception {
+        auteurs.add(auteur);
         return boekRepository.addAuteur(auteur);
     }
     public boolean addUitgever(Uitgever uitgever) throws Exception {
+        uitgevers.add(uitgever);
         return boekRepository.addUitgever(uitgever);
     }
     public void addBoekExemplaar(Boek boek) throws Exception {
@@ -131,7 +140,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         return null;
     }
     public Gebruiker zoekGebruiker(String gebruikernaam) throws Exception {
-        for (Gebruiker g: gebruikers) { if (g.getGebruikersnaam().equals(gebruikernaam)) { return g; } }
+        for (Gebruiker g: gebruikers) { if (g.getGebruikersnaam().toLowerCase().equals(gebruikernaam.toLowerCase())) { return g; } }
         return null;
     }
 

@@ -27,11 +27,11 @@ public class Boek implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    public void setUitgever(Uitgever uitgever) {
-        this.uitgever = uitgever;
-    }
     public void setAuteurs(Auteur auteur) {
         this.auteurs.add(auteur);
+    }
+    public void setUitgever(Uitgever uitgever) {
+        this.uitgever = uitgever;
     }
     public void setBoekExemplaren(BoekExemplaar boekExemplaar) {this.boekExemplaren.add(boekExemplaar); }
 

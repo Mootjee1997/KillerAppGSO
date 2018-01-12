@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.BoekController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="1016.0" style="-fx-background-color: #c6bcab;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.JavaFX.BoekController">
    <children>
       <Button fx:id="btnLoguit" layoutX="20.0" layoutY="607.0" mnemonicParsing="false" onAction="#loguit" prefHeight="44.0" prefWidth="209.0" style="-fx-background-color: Red;" text="Loguit" textFill="WHITE">
          <effect>
@@ -49,21 +49,21 @@
          </effect>
       </Button>
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
-      <Label layoutX="450.0" layoutY="191.0" text="Titel:" />
+      <Label layoutX="438.0" layoutY="191.0" text="Titel: *" />
       <TextField fx:id="tbTitel" layoutX="499.0" layoutY="186.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
-      <Label layoutX="411.0" layoutY="223.0" text="Descriptie:" />
-      <Label layoutX="410.0" layoutY="353.0" text="Tot. aantal:" />
+      <Label layoutX="400.0" layoutY="223.0" text="Descriptie: *" />
+      <Label layoutX="398.0" layoutY="353.0" text="Tot. aantal: *" />
       <TextField fx:id="tbTotAantal" layoutX="499.0" layoutY="348.0" prefHeight="31.0" prefWidth="288.0" promptText="Totaal aantal exemplaren" />
-      <Label layoutX="434.0" layoutY="392.0" text="Auteur:" />
+      <Label layoutX="416.0" layoutY="392.0" text="Auteurs: *" />
       <TextField fx:id="tbAuteurs" layoutX="499.0" layoutY="427.0" prefHeight="31.0" prefWidth="288.0" promptText="Andere auteur" />
-      <Label layoutX="421.0" layoutY="471.0" text="Uitgever:" />
+      <Label layoutX="410.0" layoutY="471.0" text="Uitgever: *" />
       <TextField fx:id="tbUitgever" layoutX="499.0" layoutY="506.0" prefHeight="31.0" prefWidth="288.0" promptText="Uitgever" />
       <Label layoutX="497.0" layoutY="163.0" text="Boekinfo:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Button fx:id="btnToevoegenBoek" layoutX="499.0" layoutY="545.0" mnemonicParsing="false" onAction="#boekToevoegen" prefHeight="44.0" prefWidth="288.0" style="-fx-background-color: #46B57A;" text="Toevoegen">
+      <Button fx:id="btnToevoegenBoek" disable="true" layoutX="499.0" layoutY="545.0" mnemonicParsing="false" onAction="#boekToevoegen" prefHeight="44.0" prefWidth="288.0" style="-fx-background-color: #46B57A;" text="Toevoegen">
          <effect>
             <Glow />
          </effect>

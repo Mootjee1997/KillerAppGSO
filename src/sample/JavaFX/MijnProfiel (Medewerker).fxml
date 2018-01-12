@@ -72,7 +72,7 @@
       <Label layoutX="438.0" layoutY="330.0" text="Email:" />
       <Label layoutX="398.0" layoutY="287.0" text="Woonplaats:" />
       <Label layoutX="392.0" layoutY="243.0" text="Wachtwoord:" />
-      <Button fx:id="btnProfielWijzigen" layoutX="554.0" layoutY="463.0" mnemonicParsing="false" onAction="#wijzigProfiel" prefHeight="44.0" prefWidth="209.0" style="" text="Wijzigingen opslaan">
+      <Button fx:id="btnProfielWijzigen" disable="true" layoutX="554.0" layoutY="463.0" mnemonicParsing="false" onAction="#wijzigProfiel" prefHeight="44.0" prefWidth="209.0" style="" text="Wijzigingen opslaan">
          <effect>
             <Glow />
          </effect>
