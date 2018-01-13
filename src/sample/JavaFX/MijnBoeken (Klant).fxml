@@ -72,5 +72,10 @@
          </font>
       </Label>
       <TextArea fx:id="tbDescriptie" editable="false" layoutX="669.0" layoutY="211.0" prefHeight="325.0" prefWidth="288.0" promptText="Descriptie" wrapText="true" />
+      <Label fx:id="lblMessageBL" alignment="CENTER" layoutX="280.0" layoutY="113.0" prefHeight="21.0" prefWidth="712.0">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

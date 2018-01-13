@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class AppManagerTest {
+    final String klant = "klant", medewerker = "medewerker", deGriezelbus = "De griezelbus";
     AppManager appManager = AppManager.getInstance();
-    public AppManagerTest() throws Exception { }
+    public AppManagerTest() throws Exception {
+        //Lege constructor
+    }
 
     @Test
     public void getInstance() throws Exception {
@@ -16,10 +19,8 @@ public class AppManagerTest {
 
     @Test
     public void login() throws Exception {
-        String gebruikersnaam = "Medewerker";
-        String wachtwoord = "medewerker";
-        appManager.login(gebruikersnaam, wachtwoord);
-        assertEquals(gebruikersnaam, appManager.getGebruiker().getGebruikersnaam());
+        appManager.login(medewerker, medewerker);
+        assertEquals(medewerker, appManager.getGebruiker().getGebruikersnaam());
     }
 
     @Test
@@ -38,7 +39,7 @@ public class AppManagerTest {
     @Test
     public void leenUit() throws Exception {
         int volgnummer = 1;
-        Gebruiker gebruiker = appManager.zoekGebruiker("Klant");
+        Gebruiker gebruiker = appManager.zoekGebruiker(klant);
         appManager.leenUit(volgnummer, gebruiker);
         assertTrue(appManager.zoekGebruiker(gebruiker.getGebruikersnaam()).getGeleendeBoeken().contains(String.valueOf(volgnummer)));
     }
@@ -46,7 +47,7 @@ public class AppManagerTest {
     @Test
     public void retourneer() throws Exception {
         int volgnummer = 1;
-        Gebruiker gebruiker = appManager.zoekGebruiker("Klant");
+        Gebruiker gebruiker = appManager.zoekGebruiker(klant);
         appManager.retourneer(volgnummer, gebruiker);
         assertFalse(appManager.zoekGebruiker(gebruiker.getGebruikersnaam()).getGeleendeBoeken().contains(String.valueOf(volgnummer)));
     }
@@ -88,7 +89,7 @@ public class AppManagerTest {
 
     @Test
     public void zoekBoek() throws Exception {
-        assertNotNull(appManager.zoekBoek("De griezelbus"));
+        assertNotNull(appManager.zoekBoek(deGriezelbus));
     }
 
     @Test
@@ -98,7 +99,7 @@ public class AppManagerTest {
 
     @Test
     public void zoekGebruiker() throws Exception {
-        assertNotNull(appManager.zoekGebruiker("Klant"));
+        assertNotNull(appManager.zoekGebruiker(klant));
     }
 
     @Test
@@ -116,26 +117,26 @@ public class AppManagerTest {
     @Test
     public void getBoeken() throws Exception {
         ArrayList<String> list = appManager.getBoeken();
-        assertTrue(list.contains("De griezelbus"));
+        assertTrue(list.contains(deGriezelbus));
     }
 
     @Test
     public void getGebruikers() throws Exception {
         ArrayList<String> list = appManager.getGebruikers();
-        assertTrue(list.contains("Klant"));
+        assertTrue(list.contains(klant));
     }
 
     @Test
     public void getGeleendeBoeken() throws Exception {
         int volgnummer = 2;
-        Gebruiker gebruiker = appManager.zoekGebruiker("Klant");
+        Gebruiker gebruiker = appManager.zoekGebruiker(klant);
         appManager.leenUit(volgnummer, gebruiker);
         assertTrue(appManager.getGeleendeBoeken(gebruiker).contains(String.valueOf(volgnummer)));
     }
 
     @Test
     public void getBeschikbareExemplaren() throws Exception {
-        ArrayList<String> list = appManager.getBeschikbareExemplaren("De griezelbus");
+        ArrayList<String> list = appManager.getBeschikbareExemplaren(deGriezelbus);
         assertTrue(list.contains("1"));
     }
 
@@ -149,7 +150,7 @@ public class AppManagerTest {
 
     @Test
     public void getGebruiker() throws Exception {
-        appManager.login("Medewerker", "Medewerker");
-        assertTrue(appManager.getGebruiker().getGebruikersnaam().equals("Medewerker"));
+        appManager.login(medewerker, medewerker);
+        assertTrue(appManager.getGebruiker().getGebruikersnaam().equals(medewerker));
     }
 }

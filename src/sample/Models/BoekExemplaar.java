@@ -19,7 +19,7 @@ public class BoekExemplaar implements Serializable {
     public void setBoek(Boek boek) {
         this.boek = boek;
     }
-    public void setBeschrijving(String beschrijving) throws Exception {
+    public void setBeschrijving(String beschrijving) {
         this.beschrijving = beschrijving;
     }
     public void setBeschikbaar(boolean beschikbaar) {

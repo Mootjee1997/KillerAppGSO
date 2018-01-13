@@ -5,10 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sample.Core.AppManager;
@@ -18,13 +15,17 @@ import sample.Enums.Status;
 import sample.Models.Gebruiker;
 import sample.Models.Gegevens;
 
+import java.io.*;
+import java.util.Properties;
+
 public class GebruikerController {
     private Parent scherm;
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
     private boolean voteGebruikersnaam, voteWachtwoord, voteEmail, voteNaam, voteHuidigWachtwoord;
 
-    @FXML public Button btnProfielWijzigen, btnRegistreer;
+    @FXML public CheckBox cbOnthoudtGebruikersnaam;
+    @FXML public Button btnProfielWijzigen, btnRegistreer, btnLogin;
     @FXML public PasswordField tbWachtwoord, tbPasswordVerif;
     @FXML public Label lblmessage, lblIngelogdAls;
     @FXML public TextField tbGebruikersnaam, tbNaam,tbWoonplaats, tbEmail, tbTelefoonNr, tbWachtwoordVisible;
@@ -45,6 +46,9 @@ public class GebruikerController {
     public void login(ActionEvent e) throws Exception {
         if (!tbGebruikersnaam.getText().trim().equals("") && !tbWachtwoord.getText().trim().equals("")) {
             if (loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText())) {
+                if (cbOnthoudtGebruikersnaam.isSelected()) {
+                    saveProperties();
+                }
                 showWindow(e);
             }
             else showMessage(Kleur.RED, "Gebruikersnaam en/of wachtwoord komen niet overeen.", 4000);
@@ -69,8 +73,8 @@ public class GebruikerController {
     }
 
     public void initialize() throws Exception {
+        loadProperties();
         startListeners();
-        appManager.gebruikerController = this;
         if (tbNaam != null && tbWoonplaats != null && tbEmail != null && tbTelefoonNr != null && btnProfielWijzigen != null) {
             tbNaam.setText(gebruiker.getGegevens().getNaam());
             tbWoonplaats.setText(gebruiker.getGegevens().getWoonplaats());
@@ -124,7 +128,7 @@ public class GebruikerController {
         stage.setScene(gebruikersscherm);
         stage.show();
     }
-    public void showMessage(Kleur kleur, String message, int ms) throws Exception {
+    public void showMessage(Kleur kleur, String message, int ms) {
         if (kleur == Kleur.RED) lblmessage.setTextFill(Color.RED);
         if (kleur == Kleur.GREEN) lblmessage.setTextFill(Color.GREEN);
         lblmessage.setText(message);
@@ -150,6 +154,9 @@ public class GebruikerController {
         }
     }
     public void startListeners() throws Exception {
+        String green = "-fx-border-color: limegreen ; -fx-border-width: 2px ;";
+        String red = "-fx-border-color: red ; -fx-border-width: 2px ;";
+        String trans = "-fx-border-color: transparent ; -fx-border-width: 2px ;";
         if (btnRegistreer != null || btnProfielWijzigen != null) {
             if (tbGebruikersnaam != null && lblmessage != null) {
                 tbGebruikersnaam.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
@@ -158,21 +165,19 @@ public class GebruikerController {
                             if (btnRegistreer != null && appManager.zoekGebruiker(tbGebruikersnaam.getText().toLowerCase()) != null) {
                                 if (lblmessage.getText().equals("")) {
                                     showMessage(Kleur.RED, "Gebruikersnaam al in gebruik.", 2500);
-                                    tbGebruikersnaam.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                                    tbGebruikersnaam.setStyle(red);
                                 }
-                                disable(2);
+                                disable(1);
                             } else {
                                 lblmessage.setText("");
-                                tbGebruikersnaam.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
-                                enable(2);
+                                tbGebruikersnaam.setStyle(green);
+                                enable(1);
                             }
                         } else {
-                            tbGebruikersnaam.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
-                            disable(2);
+                            tbGebruikersnaam.setStyle(trans);
+                            disable(1);
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    } catch (Exception e) { }
                 }));
             }
             if (tbWachtwoord != null && lblmessage != null) {
@@ -180,23 +185,18 @@ public class GebruikerController {
                     if (tbWachtwoord.getText().length() > 0) {
                         if (tbWachtwoord.getText().length() < 8) {
                             if (lblmessage.getText().equals("")) {
-                                try {
-                                    showMessage(Kleur.RED, "Probeer minimaal 8 tekens.", 2500);
-                                    tbWachtwoord.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                showMessage(Kleur.RED, "Probeer minimaal 8 tekens.", 2500);
+                                tbWachtwoord.setStyle(red);
                             }
-                            disable(1);
+                            disable(2);
                         } else {
                             lblmessage.setText("");
-                            tbWachtwoord.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
-                            enable(1);
+                            tbWachtwoord.setStyle(green);
+                            enable(2);
                         }
-                    }
-                    else {
-                        tbWachtwoord.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
-                        disable(1);
+                    } else {
+                        tbWachtwoord.setStyle(trans);
+                        disable(2);
                     }
                 }));
             }
@@ -204,21 +204,16 @@ public class GebruikerController {
                 tbNaam.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
                     if (tbNaam.getText().length() > 0) {
                         if (tbNaam.getText().length() > 4 && tbNaam.getText().contains(" ") && !tbNaam.getText().substring(tbNaam.getLength() - 1).contains(" ")) {
-                            tbNaam.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
-                            enable(4);
+                            tbNaam.setStyle(green);
+                            enable(3);
                         } else {
-                            try {
-                                showMessage(Kleur.RED, "Voer aub uw voor én achternaam in", 2500);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            tbNaam.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-                            disable(4);
+                            showMessage(Kleur.RED, "Voer aub uw voor én achternaam in", 2500);
+                            tbNaam.setStyle(red);
+                            disable(3);
                         }
-                    }
-                    else {
-                        tbNaam.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
-                        disable(4);
+                    } else {
+                        tbNaam.setStyle(trans);
+                        disable(3);
                     }
                 }));
             }
@@ -227,22 +222,18 @@ public class GebruikerController {
                     if (tbEmail.getText().length() > 0) {
                         if (!tbEmail.getText().contains("@") || !tbEmail.getText().contains(".") || tbEmail.getText().length() < 6 || tbEmail.getText().substring(tbEmail.getText().length() - 1).equals(".")) {
                             if (lblmessage.getText().equals("")) {
-                                try {
-                                    showMessage(Kleur.RED, "Email voldoet niet aan formaat.", 2500);
-                                    tbEmail.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                showMessage(Kleur.RED, "Email voldoet niet aan formaat.", 2500);
+                                tbEmail.setStyle(red);
                             }
-                            disable(3);
+                            disable(4);
                         } else {
                             lblmessage.setText("");
-                            tbEmail.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
-                            enable(3);
+                            tbEmail.setStyle(green);
+                            enable(4);
                         }
                     } else {
-                        tbEmail.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
-                        disable(3);
+                        tbEmail.setStyle(trans);
+                        disable(4);
                     }
                 }));
             }
@@ -251,18 +242,14 @@ public class GebruikerController {
                     if (tbPasswordVerif.getText().length() > 0) {
                         if (tbPasswordVerif.getText().equals(appManager.getGebruiker().getWachtwoord())) {
                             lblmessage.setText("");
-                            tbPasswordVerif.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                            tbPasswordVerif.setStyle(green);
                             enable(5);
                         } else {
                             if (lblmessage.getText().equals("")) {
-                                try {
-                                    showMessage(Kleur.RED, "Wachtwoord komt niet overeen met uw huidige.", 2500);
-                                    tbPasswordVerif.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                showMessage(Kleur.RED, "Wachtwoord komt niet overeen met uw huidige.", 2500);
+                                tbPasswordVerif.setStyle(red);
                             }
-                            tbPasswordVerif.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
+                            tbPasswordVerif.setStyle(trans);
                             disable(5);
                         }
                     } else disable(5);
@@ -287,7 +274,7 @@ public class GebruikerController {
             if (voteWachtwoord && voteEmail && voteNaam && voteHuidigWachtwoord) btnProfielWijzigen.setDisable(false);
         }
     }
-    public  void disable(int x) {
+    public void disable(int x) {
         if (btnRegistreer != null) {
             if (x == 1) voteGebruikersnaam = false;
             if (x == 2) voteWachtwoord = false;
@@ -303,5 +290,40 @@ public class GebruikerController {
             btnProfielWijzigen.setDisable(true);
         }
     }
-    public GebruikerController() throws Exception { }
+    public void saveProperties() {
+        try {
+            String gebruikersnaam = tbGebruikersnaam.getText();
+            Properties props = new Properties();
+            props.setProperty("Gebruikersnaam", gebruikersnaam);
+            File file = new File("C:\\Users\\Mo\\Desktop\\UserPreferences");
+            if (!file.exists()) {
+                OutputStream out = new FileOutputStream(file);
+                props.store(out, "UserPreferences");
+                out. close();
+            }
+        }
+        catch (Exception e ) {
+            e.printStackTrace();
+        }
+    }
+    public void loadProperties() {
+        if (btnLogin != null) {
+            try {
+                Properties props = new Properties();
+                File file = new File("C:\\Users\\Mo\\Desktop\\UserPreferences");
+                if (file.exists()) {
+                    InputStream in = new FileInputStream(file);
+                    props.load(in);
+                    tbGebruikersnaam.setText(props.getProperty("Gebruikersnaam"));
+                    cbOnthoudtGebruikersnaam.setSelected(true);
+                    in.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public GebruikerController() throws Exception {
+        //Empty constructor
+    }
 }

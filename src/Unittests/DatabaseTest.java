@@ -3,7 +3,6 @@ import org.junit.Test;
 import sample.Database.Database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import static org.junit.Assert.*;
 
 public class DatabaseTest {

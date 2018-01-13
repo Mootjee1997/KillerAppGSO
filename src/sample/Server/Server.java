@@ -7,18 +7,14 @@ import sample.Enums.Status;
 import sample.Models.*;
 import sample.Repositories.BoekRepository;
 import sample.Repositories.GebruikerRepository;
-import java.io.IOException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class Server extends UnicastRemoteObject implements IServer {
-    private boolean portTaken = false;
     private int port = 1099;
-    private Registry registry = null;
+    private transient Registry registry = null;
     private RemotePublisher publisher;
     private ArrayList<Auteur> auteurs;
     private ArrayList<Uitgever> uitgevers;
@@ -28,7 +24,7 @@ public class Server extends UnicastRemoteObject implements IServer {
     private BoekRepository boekRepository = new BoekRepository(new IBoekContext());
     private GebruikerRepository gebruikerRepository = new GebruikerRepository(new IGebruikerContext());
 
-    public Server() throws RemoteException {
+    public Server() throws Exception {
         super();
         try {
             registry = createRegistry();
@@ -39,6 +35,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 registry.rebind("Server", server);
                 publisher.registerProperty("BoekAdd");
                 publisher.registerProperty("GebruikerAdd");
+                publisher.registerProperty("MijnBoeken");
                 System.out.println("Server: bound and ready for use.");
                 getAuteurs();
                 getUitgevers();
@@ -49,20 +46,15 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
         catch (Exception e){
             System.out.println("Server could not be bound.");
-            e.printStackTrace();
         }
     }
-    public Registry createRegistry() throws IOException, NotBoundException {
+    public Registry createRegistry() throws Exception {
         try {
-            if (portTaken == false) {
-                registry = LocateRegistry.createRegistry(port);
-                System.out.println("Server: created Registry on portnumber: " + port + ".");
-            }
-            else System.out.println("Port: 1099 is already in use, close the previous Server please.");
+            registry = LocateRegistry.createRegistry(port);
+            System.out.println("Server: created Registry on portnumber: " + port + ".");
         }
-        catch (RemoteException e) {
+        catch (Exception e) {
             System.out.println("Could not create Registry.");
-            e.printStackTrace();
         }
         return registry;
     }
@@ -81,12 +73,14 @@ public class Server extends UnicastRemoteObject implements IServer {
         BoekExemplaar boekExemplaar = zoekBoekExemplaar(volgnummer);
         boekExemplaar.setBeschikbaar(false);
         zoekGebruiker(gebruiker.getGebruikersnaam()).addGeleendeBoek(boekExemplaar);
+        publisher.inform("MijnBoeken", getGeleendeBoeken(gebruiker), getGeleendeBoeken(gebruiker));
         return boekRepository.leenUit(boekExemplaar, gebruiker);
     }
     public boolean retourneer(int volgnummer, Gebruiker gebruiker) throws Exception {
         BoekExemplaar boekExemplaar = zoekBoekExemplaar(volgnummer);
         boekExemplaar.setBeschikbaar(true);
         zoekGebruiker(gebruiker.getGebruikersnaam()).deleteGeleendeBoek(volgnummer);
+        publisher.inform("MijnBoeken", getGeleendeBoeken(gebruiker), getGeleendeBoeken(gebruiker));
         return boekRepository.retourneer(boekExemplaar, gebruiker);
     }
 
@@ -107,10 +101,6 @@ public class Server extends UnicastRemoteObject implements IServer {
     }
     public void addBoek(Boek boek, String aantalExemplaren) throws Exception {
         int x = Integer.parseInt(aantalExemplaren);
-        for (Auteur auteur : boek.getAuteurs()) {
-            addAuteur(auteur);
-        }
-        addUitgever(boek.getUitgever());
         boek = boekRepository.addBoek(boek);
         for (int i = 0; i < x; i++) {
             addBoekExemplaar(boek);

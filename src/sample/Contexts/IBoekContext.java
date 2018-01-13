@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class IBoekContext {
+    private final String email = "Email", woonplaats = "Woonplaats", telefoonNr = "TelefoonNr";
     private Database db = new Database();
     private ResultSet rs = null;
     private String query;
@@ -211,7 +212,7 @@ public class IBoekContext {
                 rs1 = db.loadObject(ps2);
 
                 while (rs1.next()) {
-                    Uitgever uitgever = new Uitgever(new Gegevens(rs1.getString("Naam"), rs1.getString("Email"), rs1.getString("Woonplaats"), rs1.getString("TelefoonNr")));
+                    Uitgever uitgever = new Uitgever(new Gegevens(rs1.getString("Naam"), rs1.getString(email), rs1.getString(woonplaats), rs1.getString(telefoonNr)));
                     boek.setUitgever(uitgever);
                 }
 
@@ -222,7 +223,7 @@ public class IBoekContext {
                 rs2 = db.loadObject(ps3);
 
                 while (rs2.next()) {
-                    Auteur auteur = new Auteur(new Gegevens(rs2.getString("Naam"), rs2.getString("Email"), rs2.getString("Woonplaats"), rs2.getString("TelefoonNr")));
+                    Auteur auteur = new Auteur(new Gegevens(rs2.getString("Naam"), rs2.getString(email), rs2.getString(woonplaats), rs2.getString(telefoonNr)));
                     boek.setAuteurs(auteur);
                 }
 

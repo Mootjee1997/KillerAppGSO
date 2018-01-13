@@ -22,7 +22,7 @@ public class BoekController {
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
     private ObservableList<String> boeken, auteurs, uitgevers, gebruikers, mijnBoeken, beschikbareExemplaren, geleendeBoeken;
-    private boolean voteTitel, voteDescriptie, voteTotAantal, voteAuteurs, voteUitgever;
+    private boolean voteTitel, voteDescriptie, voteAuteurs, voteUitgever, voteTotAantal;
 
     @FXML private Button btnLeenUit, btnToevoegenBoek;
     @FXML private Label lblIngelogdAls, lblMessageBL;
@@ -32,34 +32,32 @@ public class BoekController {
     @FXML private ComboBox cbAuteurs, cbUitgever;
 
     public void boekToevoegen(ActionEvent e) throws Exception {
-        if (!tbTitel.getText().trim().equals("") && !tbDescriptie.getText().trim().equals("") && !tbTotAantal.getText().trim().equals("") && !tbAuteurs.getText().trim().equals("") && !tbUitgever.getText().trim().equals("")) {
-            Uitgever uitgever;
-            ArrayList<Auteur> auteursListBoek = new ArrayList<>();
-            String auteurs = tbAuteurs.getText();
-            String[] auteursList = auteurs.split(", ");
-            //Toevoegen van de opgegeven Auteurs aan het nieuwe Boek-object
-            for (String s : auteursList) {
-                if (appManager.zoekAuteur(s) != null) {
-                    auteursListBoek.add(appManager.zoekAuteur(s));
-                }
-                else {
-                    Auteur auteur = new Auteur(new Gegevens(s));
-                    appManager.addAuteur(auteur);
-                    auteursListBoek.add(auteur);
-                }
-            }
-            //Toevoegen van de opgegeven Uitgever aan het nieuwe boek-object
-            if (appManager.zoekUitgever(tbUitgever.getText()) != null) {
-                uitgever = appManager.zoekUitgever(tbUitgever.getText());
+        Uitgever uitgever;
+        ArrayList<Auteur> auteursListBoek = new ArrayList<>();
+        String auteurs = tbAuteurs.getText();
+        String[] auteursList = auteurs.split(", ");
+        //Toevoegen van de opgegeven Auteurs aan het nieuwe Boek-object
+        for (String s : auteursList) {
+            if (appManager.zoekAuteur(s) != null) {
+                auteursListBoek.add(appManager.zoekAuteur(s));
             }
             else {
-                uitgever = new Uitgever(new Gegevens(tbUitgever.getText()));
-                appManager.addUitgever(uitgever);
+                Auteur auteur = new Auteur(new Gegevens(s));
+                appManager.addAuteur(auteur);
+                auteursListBoek.add(auteur);
             }
-            appManager.addBoek(new Boek(tbTitel.getText(), tbDescriptie.getText(), auteursListBoek, uitgever), tbTotAantal.getText());
-            showMessage(Kleur.GREEN, "Boek succesvol toegevoegd.", 2500);
         }
-        else showMessage(Kleur.RED, "Vul alle benodigde velden in aub.", 2500);
+        //Toevoegen van de opgegeven Uitgever aan het nieuwe boek-object
+        if (appManager.zoekUitgever(tbUitgever.getText()) != null) {
+            uitgever = appManager.zoekUitgever(tbUitgever.getText());
+        }
+        else {
+            uitgever = new Uitgever(new Gegevens(tbUitgever.getText()));
+            appManager.addUitgever(uitgever);
+        }
+        appManager.addBoek(new Boek(tbTitel.getText(), tbDescriptie.getText(), auteursListBoek, uitgever), tbTotAantal.getText());
+        showMessage(Kleur.GREEN, "Boek succesvol toegevoegd.", 2500);
+        updateLists();
     }
 
     public void leenUit(ActionEvent e) throws Exception {
@@ -97,7 +95,7 @@ public class BoekController {
     public void initialize() throws Exception {
         updateLists();
         startListeners();
-        appManager.boekController = this;
+        appManager.setBoekController(this);
         lblIngelogdAls.setText("Ingelogd als: " + gebruiker.getGebruikersnaam());
     }
     public void loguit(ActionEvent e) throws Exception {
@@ -228,6 +226,27 @@ public class BoekController {
             cbUitgever.setItems(uitgevers);
         }
     }
+    public void updateMijnBoeken(ArrayList<String> newList) {
+        if (lsMijnBoeken != null) {
+            Platform.runLater(() -> {
+                try {
+                    int x = lsMijnBoeken.getItems().size();
+                    if (x < newList.size()) {
+                        showMessage(Kleur.GREEN, "Gefeliciteerd! Je hebt een nieuw boek geleend.", 6000);
+                    }
+                    else {
+                        showMessage(Kleur.RED, "Een van uw boeken is geretourneerd.", 6000);
+                    }
+                    ObservableList<String> mijnBoeken = FXCollections.observableArrayList(newList);
+                    lsMijnBoeken.setItems(mijnBoeken);
+                }
+                catch (Exception ex) {
+                    System.out.println(ex);
+                    ex.printStackTrace();
+                }
+            });
+        }
+    }
     public void updateBoekList(ArrayList<String> newList) {
         if (lsBoekenLijst != null) {
             Platform.runLater(() -> {
@@ -277,21 +296,25 @@ public class BoekController {
         );
     }
     public void startListeners() throws Exception {
+        String green = "-fx-border-color: limegreen ; -fx-border-width: 2px ;";
+        String red = "-fx-border-color: red ; -fx-border-width: 2px ;";
+        String trans = "-fx-border-color: transparent ; -fx-border-width: 2px ;";
+
         if (btnToevoegenBoek != null) {
             if (tbTitel != null && lblMessageBL != null) {
                 tbTitel.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
                     if (tbTitel.getText().length() > 0) {
                         if (tbTitel.getText().length() > 1) {
                             lblMessageBL.setText("");
-                            tbTitel.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                            tbTitel.setStyle(green);
                             enable(1);
                         } else {
                             showMessage(Kleur.RED, "Titel moet minimaal 2 letters hebben.", 2500);
-                            tbTitel.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                            tbTitel.setStyle(red);
                             disable(1);
                         }
                     } else {
-                        tbTitel.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
+                        tbTitel.setStyle(trans);
                         disable(1);
                     }
                 }));
@@ -301,15 +324,15 @@ public class BoekController {
                     if (tbDescriptie.getText().length() > 0) {
                         if (tbDescriptie.getText().length() > 10) {
                             lblMessageBL.setText("");
-                            tbDescriptie.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                            tbDescriptie.setStyle(green);
                             enable(2);
                         } else {
                             showMessage(Kleur.RED, "Voer minimaal een descriptie in van 10 tekens.", 2500);
-                            tbDescriptie.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                            tbDescriptie.setStyle(red);
                             disable(2);
                         }
                     } else {
-                        tbDescriptie.setStyle("-fx-border-color: transparent ; -fx-border-width: 2px ;");
+                        tbDescriptie.setStyle(trans);
                         disable(2);
                     }
                 }));
@@ -318,17 +341,17 @@ public class BoekController {
                 tbTotAantal.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
                     if (tbTotAantal.getText().matches("[0-9]+")) {
                         if (tbTotAantal.getText().length() > 0 && Integer.parseInt(tbTotAantal.getText()) > 0 && Integer.parseInt(tbTotAantal.getText()) < 21) {
-                            tbTotAantal.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                            tbTotAantal.setStyle(green);
                             enable(3);
                         } else {
                             showMessage(Kleur.RED, "Voer aub een geldig aantal exemplaren in (1-20)", 3500);
-                            tbTotAantal.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                            tbTotAantal.setStyle(red);
                             disable(3);
                         }
                     }
                     else {
                         showMessage(Kleur.RED, "Voer aub een geldige waarde in.", 3500);
-                        tbTotAantal.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                        tbTotAantal.setStyle(trans);
                         disable(3);
                     }
                 }));
@@ -336,12 +359,12 @@ public class BoekController {
             if (tbAuteurs != null && lblMessageBL != null) {
                 tbAuteurs.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
                     if (tbAuteurs.getText().length() > 0) {
-                        tbAuteurs.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                        tbAuteurs.setStyle(green);
                         enable(4);
                     }
                     else {
                         showMessage(Kleur.RED, "Voer aub een Auteur in of selecteer er een uit de lijst.", 5500);
-                        tbAuteurs.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                        tbAuteurs.setStyle(red);
                         disable(4);
                     }
                 }));
@@ -349,12 +372,12 @@ public class BoekController {
             if (tbUitgever != null && lblMessageBL != null) {
                 tbUitgever.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
                     if (tbUitgever.getText().length() > 0) {
-                        tbUitgever.setStyle("-fx-border-color: limegreen ; -fx-border-width: 2px ;");
+                        tbUitgever.setStyle(green);
                         enable(5);
                     }
                     else {
                         showMessage(Kleur.RED, "Voer aub een Uitgever in of selecteer er een uit de lijst.", 5500);
-                        tbUitgever.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+                        tbUitgever.setStyle(red);
                         disable(5);
                     }
                 }));
@@ -382,5 +405,7 @@ public class BoekController {
             btnToevoegenBoek.setDisable(true);
         }
     }
-    public BoekController() throws Exception { }
+    public BoekController() throws Exception {
+        //Empty constructor
+    }
 }

@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class GebruikerTest {
+    final String gebruikersnaam = "Gebruikersnaam";
     Gebruiker gebruiker;
 
     public GebruikerTest() {
-        gebruiker = new Gebruiker(1, "Gebruikersnaam", "medewerker", Status.MEDEWERKER, new Gegevens("Naam"));
+        gebruiker = new Gebruiker(1, gebruikersnaam, "medewerker", Status.MEDEWERKER, new Gegevens("Naam"));
     }
 
     @Test
@@ -58,7 +59,7 @@ public class GebruikerTest {
 
     @Test
     public void getGebruikersnaam() throws Exception {
-        assertEquals("Gebruikersnaam", gebruiker.getGebruikersnaam());
+        assertEquals(gebruikersnaam, gebruiker.getGebruikersnaam());
     }
 
     @Test
@@ -93,7 +94,7 @@ public class GebruikerTest {
 
     @Test
     public void getToString() throws Exception {
-        assertEquals("Gebruikersnaam", gebruiker.toString());
+        assertEquals(gebruikersnaam, gebruiker.toString());
     }
 
 }

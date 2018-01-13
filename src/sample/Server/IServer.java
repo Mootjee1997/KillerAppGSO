@@ -1,7 +1,8 @@
 package sample.Server;
 import fontys.IRemotePropertyListener;
 import sample.Models.*;
-import java.rmi.Remote;;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface IServer extends Remote {

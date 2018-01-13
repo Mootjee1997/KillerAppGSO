@@ -22,11 +22,14 @@ public class AppManager extends UnicastRemoteObject implements IRemotePropertyLi
         server = (IServer) Naming.lookup("rmi://localhost:1099/Server");
         server.subscribePublisher(this, "BoekAdd");
         server.subscribePublisher(this, "GebruikerAdd");
+        server.subscribePublisher(this, "MijnBoeken");
     }
     private IServer server;
     private Gebruiker gebruiker;
-    public BoekController boekController;
-    public GebruikerController gebruikerController;
+    private BoekController boekController;
+    public void setBoekController(BoekController boekController) {
+        this.boekController = boekController;
+    }
 
     public Gebruiker login(String gebruikernaam, String wachtwoord) throws Exception {
         return gebruiker = server.login(gebruikernaam, wachtwoord);
@@ -107,6 +110,9 @@ public class AppManager extends UnicastRemoteObject implements IRemotePropertyLi
             }
             if (evt.getPropertyName().equals("GebruikerAdd")) {
                 boekController.updateGebruikersList((ArrayList<String>) evt.getNewValue());
+            }
+            if (evt.getPropertyName().equals("MijnBoeken")) {
+                boekController.updateMijnBoeken((ArrayList<String>) evt.getNewValue());
             }
         }
         catch (Exception ex) {

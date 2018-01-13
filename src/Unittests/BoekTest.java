@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class BoekTest {
+    final String titel = "Titel";
     ArrayList<Auteur> auteurs;
     Auteur auteur;
     Uitgever uitgever;
@@ -14,7 +15,7 @@ public class BoekTest {
         auteurs = new ArrayList<>();
         auteur = new Auteur(new Gegevens("Auteur")); auteurs.add(auteur);
         uitgever = new Uitgever(new Gegevens("Uitgever"));
-        boek = new Boek("Titel", "Descriptie", auteurs, uitgever);
+        boek = new Boek(titel, "Descriptie", auteurs, uitgever);
     }
 
     @Test
@@ -25,7 +26,7 @@ public class BoekTest {
 
     @Test
     public void getTitel() throws Exception {
-        assertEquals("Titel", boek.getTitel());
+        assertEquals(titel, boek.getTitel());
     }
 
     @Test
@@ -65,7 +66,7 @@ public class BoekTest {
 
     @Test
     public void getToString() throws Exception {
-        assertEquals("Titel", boek.getTitel());
+        assertEquals(titel, boek.getTitel());
     }
 
 }
