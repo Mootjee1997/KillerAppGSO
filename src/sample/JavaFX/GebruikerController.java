@@ -14,7 +14,6 @@ import sample.Enums.Kleur;
 import sample.Enums.Status;
 import sample.Models.Gebruiker;
 import sample.Models.Gegevens;
-
 import java.io.*;
 import java.util.Properties;
 
@@ -46,9 +45,7 @@ public class GebruikerController {
     public void login(ActionEvent e) throws Exception {
         if (!tbGebruikersnaam.getText().trim().equals("") && !tbWachtwoord.getText().trim().equals("")) {
             if (loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText())) {
-                if (cbOnthoudtGebruikersnaam.isSelected()) {
-                    saveProperties();
-                }
+                saveProperties();
                 showWindow(e);
             }
             else showMessage(Kleur.RED, "Gebruikersnaam en/of wachtwoord komen niet overeen.", 4000);
@@ -200,7 +197,7 @@ public class GebruikerController {
                     }
                 }));
             }
-            if (tbNaam != null) {
+            if (tbNaam != null && lblmessage != null) {
                 tbNaam.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
                     if (tbNaam.getText().length() > 0) {
                         if (tbNaam.getText().length() > 4 && tbNaam.getText().contains(" ") && !tbNaam.getText().substring(tbNaam.getLength() - 1).contains(" ")) {
@@ -249,10 +246,12 @@ public class GebruikerController {
                                 showMessage(Kleur.RED, "Wachtwoord komt niet overeen met uw huidige.", 2500);
                                 tbPasswordVerif.setStyle(red);
                             }
-                            tbPasswordVerif.setStyle(trans);
                             disable(5);
                         }
-                    } else disable(5);
+                    } else {
+                        tbPasswordVerif.setStyle(trans);
+                        disable(5);
+                    }
                 }));
             }
         }
@@ -261,46 +260,46 @@ public class GebruikerController {
         if (btnRegistreer != null) {
             if (x == 1) voteGebruikersnaam = true;
             if (x == 2) voteWachtwoord = true;
-            if (x == 3) voteEmail = true;
-            if (x == 4) voteNaam = true;
-            if (voteGebruikersnaam && voteWachtwoord && voteEmail && voteNaam) btnRegistreer.setDisable(false);
+            if (x == 3) voteNaam = true;
+            if (x == 4) voteEmail = true;
+            if (voteGebruikersnaam && voteWachtwoord && voteNaam && voteEmail) btnRegistreer.setDisable(false);
             else btnRegistreer.setDisable(true);
         }
         if (btnProfielWijzigen != null) {
             if (x == 2 || tbWachtwoord.getText().equals("")) voteWachtwoord = true;
-            if (x == 3) voteEmail = true;
-            if (x == 4 || btnProfielWijzigen != null) voteNaam = true;
+            if (x == 3) voteNaam = true;
+            if (x == 4) voteEmail = true;
             if (x == 5) voteHuidigWachtwoord = true;
-            if (voteWachtwoord && voteEmail && voteNaam && voteHuidigWachtwoord) btnProfielWijzigen.setDisable(false);
+            if (voteWachtwoord && voteNaam && voteEmail && voteHuidigWachtwoord) btnProfielWijzigen.setDisable(false);
         }
     }
     public void disable(int x) {
         if (btnRegistreer != null) {
             if (x == 1) voteGebruikersnaam = false;
             if (x == 2) voteWachtwoord = false;
-            if (x == 3) voteEmail = false;
-            if (x == 4) voteNaam = false;
+            if (x == 3) voteNaam = false;
+            if (x == 4) voteEmail = false;
             btnRegistreer.setDisable(true);
         }
         if (btnProfielWijzigen != null) {
             if (x == 2) voteWachtwoord = false;
-            if (x == 3) voteEmail = false;
-            if (x == 4) voteNaam = false;
+            if (x == 3) voteNaam = false;
+            if (x == 4) voteEmail = false;
             if (x == 5) voteHuidigWachtwoord = false;
             btnProfielWijzigen.setDisable(true);
         }
     }
     public void saveProperties() {
         try {
-            String gebruikersnaam = tbGebruikersnaam.getText();
+            String gebruikersnaam;
+            if (cbOnthoudtGebruikersnaam.isSelected()) gebruikersnaam = tbGebruikersnaam.getText();
+            else gebruikersnaam = "";
             Properties props = new Properties();
             props.setProperty("Gebruikersnaam", gebruikersnaam);
             File file = new File("C:\\Users\\Mo\\Desktop\\UserPreferences");
-            if (!file.exists()) {
-                OutputStream out = new FileOutputStream(file);
-                props.store(out, "UserPreferences");
-                out. close();
-            }
+            OutputStream out = new FileOutputStream(file);
+            props.store(out, "UserPreferences");
+            out. close();
         }
         catch (Exception e ) {
             e.printStackTrace();
@@ -314,8 +313,11 @@ public class GebruikerController {
                 if (file.exists()) {
                     InputStream in = new FileInputStream(file);
                     props.load(in);
-                    tbGebruikersnaam.setText(props.getProperty("Gebruikersnaam"));
-                    cbOnthoudtGebruikersnaam.setSelected(true);
+                    if (!props.getProperty("Gebruikersnaam").equals("")) {
+                        tbGebruikersnaam.setText(props.getProperty("Gebruikersnaam"));
+                        cbOnthoudtGebruikersnaam.setSelected(true);
+                    }
+                    else cbOnthoudtGebruikersnaam.setSelected(false);
                     in.close();
                 }
             } catch (Exception e) {
