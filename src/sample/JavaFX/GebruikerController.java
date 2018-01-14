@@ -201,6 +201,7 @@ public class GebruikerController {
                     } else {
                         tbWachtwoord.setStyle(trans);
                         disable(2);
+                        if (btnProfielWijzigen != null) enable(2);
                     }
                 }));
             }

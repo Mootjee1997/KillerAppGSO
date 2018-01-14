@@ -1,7 +1,6 @@
 package sample.Core;
 import fontys.IRemotePropertyListener;
 import sample.JavaFX.BoekController;
-import sample.JavaFX.GebruikerController;
 import sample.Models.*;
 import sample.Server.*;
 import java.beans.PropertyChangeEvent;

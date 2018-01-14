@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class AppManagerTest {
-    final String klant = "klant", medewerker = "medewerker", deGriezelbus = "De griezelbus";
+    final String klant = "Klant", medewerker = "Medewerker", deGriezelbus = "De griezelbus";
     AppManager appManager = AppManager.getInstance();
     public AppManagerTest() throws Exception {
         //Lege constructor

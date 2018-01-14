@@ -15,12 +15,12 @@
    <children>
       <Button fx:id="btnOpenRegistreerScherm" layoutX="370.0" layoutY="522.0" mnemonicParsing="false" onAction="#openregistreerScherm" prefHeight="44.0" prefWidth="276.0" text="Registreer">
          <effect>
-            <Glow />
+            <Glow level="0.5" />
          </effect>
       </Button>
       <Button fx:id="btnLogin" layoutX="369.0" layoutY="401.0" mnemonicParsing="false" onAction="#login" prefHeight="44.0" prefWidth="276.0" style="-fx-background-color: #ed9923;" text="Log in">
          <effect>
-            <Glow />
+            <Glow level="0.5" />
          </effect>
       </Button>
       <Label layoutX="367.0" layoutY="488.0" text="Nog geen account? Registreer je nu gratis!" />

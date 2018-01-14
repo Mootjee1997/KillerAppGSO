@@ -53,7 +53,7 @@
          </effect>
       </Button>
       <Label fx:id="lblIngelogdAls" layoutX="25.0" layoutY="580.0" style="-fx-text-fill: GREEN;" text="Ingelogd als:" />
-      <ListView fx:id="lsBoekenLijst" layoutX="309.0" layoutY="172.0" onMouseClicked="#getSelectedItemInfo" prefHeight="440.0" prefWidth="240.0" />
+      <ListView fx:id="lsBoekenLijst" layoutX="309.0" layoutY="172.0" prefHeight="440.0" prefWidth="240.0" />
       <Label layoutX="622.0" layoutY="179.0" text="Titel:" />
       <TextField fx:id="tbTitel" editable="false" layoutX="669.0" layoutY="174.0" prefHeight="31.0" prefWidth="288.0" promptText="Titel" />
       <Label layoutX="585.0" layoutY="209.0" text="Descriptie:" />

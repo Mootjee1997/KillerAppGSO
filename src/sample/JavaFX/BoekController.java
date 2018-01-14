@@ -22,9 +22,9 @@ public class BoekController {
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
     private ObservableList<String> boeken, auteurs, uitgevers, gebruikers, mijnBoeken, beschikbareExemplaren, geleendeBoeken;
-    private boolean voteTitel, voteDescriptie, voteAuteurs, voteUitgever, voteTotAantal;
+    private boolean votelsBoekenLijst, votelsGebruikersLijst, votelsGeleendeBoeken, votelsBeschikbareExemplaren, voteTitel, voteDescriptie, voteAuteurs, voteUitgever, voteTotAantal;
 
-    @FXML private Button btnLeenUit, btnToevoegenBoek;
+    @FXML private Button btnLeenUit, btnRetourneer, btnToevoegenBoek, btnBeschrijvingWijzigen;
     @FXML private Label lblIngelogdAls, lblMessageBL;
     @FXML private ListView<String> lsBoekenLijst, lsMijnBoeken, lsGeleendeBoeken, lsBeschikbareExemplaren, lsGebruikersLijst;
     @FXML private TextArea tbDescriptie, tbBeschrijving;
@@ -57,39 +57,30 @@ public class BoekController {
         }
         appManager.addBoek(new Boek(tbTitel.getText(), tbDescriptie.getText(), auteursListBoek, uitgever), tbTotAantal.getText());
         showMessage(Kleur.GREEN, "Boek succesvol toegevoegd.", 2500);
-        updateLists();
+        //updateLists();
     }
 
     public void leenUit(ActionEvent e) throws Exception {
-        if (lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
-            int volgnummer = Integer.parseInt(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem());
-            Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
-            appManager.leenUit(volgnummer, gebruiker);
-            updateLists();
-            showMessage(Kleur.GREEN, "Boek succesvol uitgeleend aan: " + gebruiker.getGebruikersnaam() + ".", 2500);
-        }
-        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar en gebruiker uit de lijst.", 2500);
+        int volgnummer = Integer.parseInt(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem());
+        Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
+        appManager.leenUit(volgnummer, gebruiker);
+        showMessage(Kleur.GREEN, "Boek succesvol uitgeleend aan: " + gebruiker.getGebruikersnaam() + ".", 2500);
+        updateLists();
     }
 
     public void retourneer(ActionEvent e) throws Exception {
-        if (lsGeleendeBoeken.getSelectionModel().getSelectedItem() != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
-            int volgnummer = Integer.parseInt(lsGeleendeBoeken.getSelectionModel().getSelectedItem());
-            Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
-            appManager.retourneer(volgnummer, gebruiker);
-            updateLists();
-            showMessage(Kleur.GREEN, "Boek succesvol geretourneerd.", 2500);
-        }
-        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar en gebruiker uit de lijsten.", 2500);
+        int volgnummer = Integer.parseInt(lsGeleendeBoeken.getSelectionModel().getSelectedItem());
+        Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
+        appManager.retourneer(volgnummer, gebruiker);
+        showMessage(Kleur.GREEN, "Boek succesvol geretourneerd.", 2500);
+        updateLists();
     }
 
     public void beschrijvingWijzigen(ActionEvent e) throws Exception {
-        if (lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null) {
-            int volgnummer = Integer.parseInt(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem());
-            String beschrijving = tbBeschrijving.getText();
-            appManager.setBeschrijving(volgnummer, beschrijving);
-            showMessage(Kleur.GREEN, "Beschrijving succesvol gewijzigd.", 2500);
-        }
-        else showMessage(Kleur.RED, "Selecteer eerst een boekexemplaar uit de lijst.", 2500);
+        int volgnummer = Integer.parseInt(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem());
+        String beschrijving = tbBeschrijving.getText();
+        appManager.setBeschrijving(volgnummer, beschrijving);
+        showMessage(Kleur.GREEN, "Beschrijving succesvol gewijzigd.", 2500);
     }
 
     public void initialize() throws Exception {
@@ -139,71 +130,42 @@ public class BoekController {
     public void selecteerUitgever(ActionEvent e) throws Exception {
         tbUitgever.setText(cbUitgever.getSelectionModel().getSelectedItem().toString());
     }
-    public void getSelectedItemInfo() throws Exception {
-        if (tbBeschrijving != null) {
-            tbBeschrijving.setText("");
-        }
-        if (lsGebruikersLijst != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null && btnLeenUit == null) {
-            Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
-            tbNaam.setText(gebruiker.getGegevens().getNaam());
-            tbWoonplaats.setText(gebruiker.getGegevens().getWoonplaats());
-            tbEmail.setText(gebruiker.getGegevens().getEmail());
-            tbTelefoonNr.setText(gebruiker.getGegevens().getTelefoonNr());
-            updateLists();
-        }
-        if (lsGeleendeBoeken != null && lsGeleendeBoeken.getSelectionModel().getSelectedItem() != null) {
-            BoekExemplaar boek = appManager.zoekBoekExemplaar(Integer.parseInt(lsGeleendeBoeken.getSelectionModel().getSelectedItem()));
-            tbBeschrijving.setText(boek.getBeschrijving());
-        }
-        if (lsBeschikbareExemplaren != null && lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null) {
-            tbBeschrijving.setText("");
-            BoekExemplaar boek = appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem())));
-            tbBeschrijving.setText(boek.getBeschrijving());
-        }
-
-        Boek boek = null;
-        if (lsBoekenLijst != null && lsBoekenLijst.getSelectionModel().getSelectedItem() != null) {
-            boek = appManager.zoekBoek(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem()));
-        }
-        if (lsMijnBoeken != null && lsMijnBoeken.getSelectionModel().getSelectedItem() != null) {
-            boek = appManager.zoekBoek(appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsMijnBoeken.getSelectionModel().getSelectedItem()))).getBoek().getTitel());
-        }
+    public void updateTextBoxes(Boek boek, BoekExemplaar boekExemplaar, Gebruiker gebruiker) throws Exception {
         if (boek != null) {
-            if (lsBeschikbareExemplaren != null) {
-                beschikbareExemplaren = FXCollections.observableArrayList(appManager.getBeschikbareExemplaren(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem())));
-                lsBeschikbareExemplaren.setItems(beschikbareExemplaren);
-            }
-            if (tbTotAantal != null && tbBeschikbaar != null) {
-                tbTotAantal.setText(String.valueOf(boek.getBoekExemplaren().size()));
-                tbBeschikbaar.setText(String.valueOf(boek.getAantalBeschikbaar()));
-            }
             tbTitel.setText(boek.getTitel());
             tbDescriptie.setText(boek.getDescriptie());
             tbUitgever.setText(boek.getUitgever().getGegevens().getNaam());
             tbAuteurs.setText("");
+            if (tbTotAantal != null && tbBeschikbaar != null) {
+                try {
+                    tbTotAantal.setText(String.valueOf(boek.getBoekExemplaren().size()));
+                    tbBeschikbaar.setText(String.valueOf(boek.getAantalBeschikbaar()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             for (Auteur auteur : boek.getAuteurs()) {
                 if (tbAuteurs.getText().equals("")) {
                     tbAuteurs.setText(auteur.getGegevens().getNaam());
-                }
-                else {
+                } else {
                     tbAuteurs.setText(tbAuteurs.getText() + ", " + auteur.getGegevens().getNaam());
                 }
             }
         }
-        if (lsBeschikbareExemplaren != null && lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() == null) {
-            tbBeschrijving.setText("");
+        if (boekExemplaar != null) {
+            tbBeschrijving.setText(boekExemplaar.getBeschrijving());
+        }
+        if (gebruiker != null) {
+            tbNaam.setText(gebruiker.getGegevens().getNaam());
+            tbWoonplaats.setText(gebruiker.getGegevens().getWoonplaats());
+            tbEmail.setText(gebruiker.getGegevens().getEmail());
+            tbTelefoonNr.setText(gebruiker.getGegevens().getTelefoonNr());
         }
     }
     public void updateLists() throws Exception {
         if (lsBeschikbareExemplaren != null && lsBoekenLijst != null && lsBoekenLijst.getSelectionModel().getSelectedItem() != null) {
             beschikbareExemplaren = FXCollections.observableArrayList(appManager.getBeschikbareExemplaren(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem())));
             lsBeschikbareExemplaren.setItems(beschikbareExemplaren);
-            getSelectedItemInfo();
-        }
-        if (lsGeleendeBoeken != null && lsGebruikersLijst != null && lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
-            geleendeBoeken = FXCollections.observableArrayList(appManager.getGeleendeBoeken(appManager.zoekGebruiker(lsGebruikersLijst.getSelectionModel().getSelectedItem())));
-            lsGeleendeBoeken.setItems(geleendeBoeken);
-            tbBeschrijving.setText("");
         }
         if (lsBoekenLijst != null) {
             boeken = FXCollections.observableArrayList(appManager.getBoeken());
@@ -300,6 +262,89 @@ public class BoekController {
         String red = "-fx-border-color: red ; -fx-border-width: 2px ;";
         String trans = "-fx-border-color: transparent ; -fx-border-width: 2px ;";
 
+        if (lsGebruikersLijst != null) {
+            lsGebruikersLijst.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                if (lsGebruikersLijst.getSelectionModel().getSelectedItem() != null) {
+                    try {
+                        Gebruiker gebruiker = appManager.zoekGebruiker(String.valueOf(lsGebruikersLijst.getSelectionModel().getSelectedItem()));
+                        if (btnLeenUit == null) updateTextBoxes(null, null, gebruiker);
+                        if (lsGeleendeBoeken != null) {
+                            geleendeBoeken = FXCollections.observableArrayList(appManager.getGeleendeBoeken(appManager.zoekGebruiker(lsGebruikersLijst.getSelectionModel().getSelectedItem())));
+                            lsGeleendeBoeken.setItems(geleendeBoeken);
+                            tbBeschrijving.setText("");
+                        }
+                        enable(6);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                else disable(6);
+            }));
+        }
+
+        if (lsBoekenLijst != null) {
+            lsBoekenLijst.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                if (lsBoekenLijst.getSelectionModel().getSelectedItem() != null) {
+                    try {
+                        if (tbBeschrijving != null) tbBeschrijving.setText("");
+                        Boek boek = appManager.zoekBoek(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem()));
+                        updateTextBoxes(boek, null, null);
+                        if (lsBeschikbareExemplaren != null) {
+                            beschikbareExemplaren = FXCollections.observableArrayList(appManager.getBeschikbareExemplaren(String.valueOf(lsBoekenLijst.getSelectionModel().getSelectedItem())));
+                            lsBeschikbareExemplaren.setItems(beschikbareExemplaren);
+                        }
+                        enable(7);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                else disable(7);
+            }));
+        }
+
+        if (lsBeschikbareExemplaren != null) {
+            lsBeschikbareExemplaren.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                if (lsBeschikbareExemplaren.getSelectionModel().getSelectedItem() != null) {
+                    try {
+                        BoekExemplaar boekExemplaar = appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsBeschikbareExemplaren.getSelectionModel().getSelectedItem())));
+                        updateTextBoxes(null, boekExemplaar, null);
+                        enable(8);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else disable(8);
+            }));
+        }
+
+        if (lsGeleendeBoeken != null) {
+            lsGeleendeBoeken.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                if (lsGeleendeBoeken.getSelectionModel().getSelectedItem() != null) {
+                    try {
+                        BoekExemplaar boekExemplaar = appManager.zoekBoekExemplaar(Integer.parseInt(lsGeleendeBoeken.getSelectionModel().getSelectedItem()));
+                        updateTextBoxes(null, boekExemplaar, null);
+                        enable(9);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else disable(9);
+            }));
+        }
+
+        if (lsMijnBoeken != null) {
+            lsMijnBoeken.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+                if (lsMijnBoeken.getSelectionModel().getSelectedItem() != null) {
+                    try {
+                        Boek boek = appManager.zoekBoek(appManager.zoekBoekExemplaar(Integer.parseInt(String.valueOf(lsMijnBoeken.getSelectionModel().getSelectedItem()))).getBoek().getTitel());
+                        updateTextBoxes(boek, null, null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }));
+        }
+
         if (btnToevoegenBoek != null) {
             if (tbTitel != null && lblMessageBL != null) {
                 tbTitel.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
@@ -354,8 +399,7 @@ public class BoekController {
                             tbTotAantal.setStyle(red);
                             disable(3);
                         }
-                    }
-                    else {
+                    } else {
                         tbTotAantal.setStyle(trans);
                         disable(3);
                     }
@@ -366,8 +410,7 @@ public class BoekController {
                     if (tbAuteurs.getText().length() > 0) {
                         tbAuteurs.setStyle(green);
                         enable(4);
-                    }
-                    else {
+                    } else {
                         showMessage(Kleur.RED, "Voer aub een Auteur in of selecteer er een uit de lijst.", 5500);
                         tbAuteurs.setStyle(red);
                         disable(4);
@@ -379,8 +422,7 @@ public class BoekController {
                     if (tbUitgever.getText().length() > 0) {
                         tbUitgever.setStyle(green);
                         enable(5);
-                    }
-                    else {
+                    } else {
                         showMessage(Kleur.RED, "Voer aub een Uitgever in of selecteer er een uit de lijst.", 5500);
                         tbUitgever.setStyle(red);
                         disable(5);
@@ -399,6 +441,21 @@ public class BoekController {
             if (voteTitel && voteDescriptie && voteAuteurs && voteUitgever) btnToevoegenBoek.setDisable(false);
             else btnToevoegenBoek.setDisable(true);
         }
+        if (btnLeenUit != null) {
+            if (x == 6) votelsGebruikersLijst = true;
+            if (x == 7) votelsBoekenLijst = true;
+            if (x == 8) votelsBeschikbareExemplaren = true;
+            if (votelsGebruikersLijst && votelsBoekenLijst && votelsBeschikbareExemplaren) btnLeenUit.setDisable(false);
+        }
+        if (btnRetourneer != null) {
+            if (x == 6) votelsGebruikersLijst = true;
+            if (x == 9) votelsGeleendeBoeken = true;
+            if (votelsGebruikersLijst && votelsGeleendeBoeken) btnRetourneer.setDisable(false);
+        }
+        if (btnBeschrijvingWijzigen != null) {
+            if (x == 8) votelsBeschikbareExemplaren = true;
+            if (votelsBeschikbareExemplaren) btnBeschrijvingWijzigen.setDisable(false);
+        }
     }
     public void disable(int x) {
         if (btnToevoegenBoek != null) {
@@ -408,6 +465,21 @@ public class BoekController {
             if (x == 4) voteAuteurs = false;
             if (x == 5) voteUitgever = false;
             btnToevoegenBoek.setDisable(true);
+        }
+        if (btnLeenUit != null) {
+            if (x == 6) votelsGebruikersLijst = false;
+            if (x == 7) votelsBoekenLijst = false;
+            if (x == 8) votelsBeschikbareExemplaren = false;
+            btnLeenUit.setDisable(true);
+        }
+        if (btnRetourneer != null) {
+            if (x == 6) votelsGebruikersLijst = false;
+            if (x == 9) votelsGeleendeBoeken = false;
+            btnRetourneer.setDisable(true);
+        }
+        if (btnBeschrijvingWijzigen != null) {
+            if (x == 8) votelsBeschikbareExemplaren = false;
+            btnBeschrijvingWijzigen.setDisable(true);
         }
     }
     public BoekController() throws Exception {
