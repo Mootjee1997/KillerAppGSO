@@ -339,18 +339,23 @@ public class BoekController {
             }
             if (tbTotAantal != null && lblMessageBL != null) {
                 tbTotAantal.textProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
-                    if (tbTotAantal.getText().matches("[0-9]+")) {
-                        if (tbTotAantal.getText().length() > 0 && Integer.parseInt(tbTotAantal.getText()) > 0 && Integer.parseInt(tbTotAantal.getText()) < 21) {
-                            tbTotAantal.setStyle(green);
-                            enable(3);
+                    if (tbTotAantal.getText().length() > 0) {
+                        if (tbTotAantal.getText().matches("[0-9]+")) {
+                            if (tbTotAantal.getText().length() > 0 && Integer.parseInt(tbTotAantal.getText()) > 0 && Integer.parseInt(tbTotAantal.getText()) < 21) {
+                                tbTotAantal.setStyle(green);
+                                enable(3);
+                            } else {
+                                showMessage(Kleur.RED, "Voer aub een geldig aantal exemplaren in (1-20)", 3500);
+                                tbTotAantal.setStyle(red);
+                                disable(3);
+                            }
                         } else {
-                            showMessage(Kleur.RED, "Voer aub een geldig aantal exemplaren in (1-20)", 3500);
+                            showMessage(Kleur.RED, "Voer aub een geldige waarde in.", 3500);
                             tbTotAantal.setStyle(red);
                             disable(3);
                         }
                     }
                     else {
-                        showMessage(Kleur.RED, "Voer aub een geldige waarde in.", 3500);
                         tbTotAantal.setStyle(trans);
                         disable(3);
                     }

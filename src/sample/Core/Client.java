@@ -4,13 +4,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sample.Server.Server;
 
 public class Client extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        Server server = new Server();
         Parent root = FXMLLoader.load(getClass().getResource("/sample/JavaFX/Hoofdscherm.fxml"));
-        primaryStage.setTitle("Client");
+        primaryStage.setTitle("Bibliotheek Eindhoven Client");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

@@ -1,4 +1,5 @@
 package sample.JavaFX;
+import UserProperties.UserProperties;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,13 +15,13 @@ import sample.Enums.Kleur;
 import sample.Enums.Status;
 import sample.Models.Gebruiker;
 import sample.Models.Gegevens;
-import java.io.*;
-import java.util.Properties;
+import java.util.ArrayList;
 
 public class GebruikerController {
     private Parent scherm;
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
+    private UserProperties props = new UserProperties();
     private boolean voteGebruikersnaam, voteWachtwoord, voteEmail, voteNaam, voteHuidigWachtwoord;
 
     @FXML public CheckBox cbOnthoudtGebruikersnaam;
@@ -45,7 +46,7 @@ public class GebruikerController {
     public void login(ActionEvent e) throws Exception {
         if (!tbGebruikersnaam.getText().trim().equals("") && !tbWachtwoord.getText().trim().equals("")) {
             if (loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText())) {
-                saveProperties();
+                props.saveProperties(tbGebruikersnaam.getText(), cbOnthoudtGebruikersnaam.isSelected());
                 showWindow(e);
             }
             else showMessage(Kleur.RED, "Gebruikersnaam en/of wachtwoord komen niet overeen.", 4000);
@@ -70,7 +71,6 @@ public class GebruikerController {
     }
 
     public void initialize() throws Exception {
-        loadProperties();
         startListeners();
         if (tbNaam != null && tbWoonplaats != null && tbEmail != null && tbTelefoonNr != null && btnProfielWijzigen != null) {
             tbNaam.setText(gebruiker.getGegevens().getNaam());
@@ -78,6 +78,13 @@ public class GebruikerController {
             tbEmail.setText(gebruiker.getGegevens().getEmail());
             tbTelefoonNr.setText(gebruiker.getGegevens().getTelefoonNr());
             lblIngelogdAls.setText("Ingelogd als: " + gebruiker.getGebruikersnaam());
+        }
+        if (btnLogin != null) {
+            ArrayList<String> values = props.loadProperties();
+            if (values != null) {
+                if (!values.get(0).equals("")) tbGebruikersnaam.setText(values.get(0));
+                if (values.get(1).equals("True")) cbOnthoudtGebruikersnaam.setSelected(true);
+            }
         }
     }
     public void loguit(ActionEvent e) throws Exception {
@@ -119,7 +126,7 @@ public class GebruikerController {
         scherm = FXMLLoader.load(getClass().getResource("BoekToevoegen (Medewerker).fxml"));
         showWindow(e);
     }
-    public void showWindow(ActionEvent e){
+    public void showWindow(ActionEvent e) throws InterruptedException {
         Scene gebruikersscherm = new Scene(scherm);
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.setScene(gebruikersscherm);
@@ -287,42 +294,6 @@ public class GebruikerController {
             if (x == 4) voteEmail = false;
             if (x == 5) voteHuidigWachtwoord = false;
             btnProfielWijzigen.setDisable(true);
-        }
-    }
-    public void saveProperties() {
-        try {
-            String gebruikersnaam;
-            if (cbOnthoudtGebruikersnaam.isSelected()) gebruikersnaam = tbGebruikersnaam.getText();
-            else gebruikersnaam = "";
-            Properties props = new Properties();
-            props.setProperty("Gebruikersnaam", gebruikersnaam);
-            File file = new File("C:\\Users\\Mo\\Desktop\\UserPreferences");
-            OutputStream out = new FileOutputStream(file);
-            props.store(out, "UserPreferences");
-            out. close();
-        }
-        catch (Exception e ) {
-            e.printStackTrace();
-        }
-    }
-    public void loadProperties() {
-        if (btnLogin != null) {
-            try {
-                Properties props = new Properties();
-                File file = new File("C:\\Users\\Mo\\Desktop\\UserPreferences");
-                if (file.exists()) {
-                    InputStream in = new FileInputStream(file);
-                    props.load(in);
-                    if (!props.getProperty("Gebruikersnaam").equals("")) {
-                        tbGebruikersnaam.setText(props.getProperty("Gebruikersnaam"));
-                        cbOnthoudtGebruikersnaam.setSelected(true);
-                    }
-                    else cbOnthoudtGebruikersnaam.setSelected(false);
-                    in.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
     public GebruikerController() throws Exception {

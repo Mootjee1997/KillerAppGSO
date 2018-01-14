@@ -53,9 +53,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             registry = LocateRegistry.createRegistry(port);
             System.out.println("Server: created Registry on portnumber: " + port + ".");
         }
-        catch (Exception e) {
-            System.out.println("Could not create Registry.");
-        }
+        catch (Exception e) { }
         return registry;
     }
 
