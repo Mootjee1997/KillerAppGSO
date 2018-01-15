@@ -1,7 +1,6 @@
 package sample.repositories;
 import sample.contexts.IGebruikerContext;
 import sample.models.Gebruiker;
-
 import java.util.List;
 
 public class GebruikerRepository {
@@ -14,7 +13,6 @@ public class GebruikerRepository {
     public Gebruiker login(String gebruikernaam, String wachtwoord) {
         return context.login(gebruikernaam, wachtwoord);
     }
-
 
     public int registreer(Gebruiker gebruiker) {
         return context.registreer(gebruiker);

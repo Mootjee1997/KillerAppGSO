@@ -5,16 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import sample.core.AppManager;
+import sample.core.SceneHandler;
 import sample.enums.Kleur;
 import sample.enums.Status;
 import sample.models.*;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +21,7 @@ import java.util.logging.Logger;
 
 public class BoekController {
     private Logger logger = Logger.getLogger("Logger");
-    private Parent scherm;
+    private SceneHandler sceneHandler = new SceneHandler();
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
     private boolean votelsBoekenLijst;
@@ -118,29 +116,29 @@ public class BoekController {
         appManager.setBoekController(this);
         lblIngelogdAls.setText("Ingelogd als: " + gebruiker.getGebruikersnaam());
     }
-    public void loguit(ActionEvent e) {
-        loadScherm("Hoofdscherm.fxml", e);
+    public void loguit(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("Hoofdscherm.fxml")), e);
     }
-    public void openMijnBoeken(ActionEvent e) {
-        loadScherm("MijnBoeken (Klant).fxml", e);
+    public void openMijnBoeken(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("MijnBoeken (Klant).fxml")), e);
     }
-    public void openMijnProfiel(ActionEvent e) {
+    public void openMijnProfiel(ActionEvent e) throws IOException {
         if (gebruiker.getStatus() == Status.MEDEWERKER) {
-            loadScherm("MijnProfiel (Medewerker).fxml", e);
+            sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("MijnProfiel (Medewerker).fxml")), e);
         }
-        else loadScherm("MijnProfiel (Klant).fxml", e);
+        else sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("MijnProfiel (Klant).fxml")), e);
     }
-    public void openBoekenLijst(ActionEvent e) {
+    public void openBoekenLijst(ActionEvent e) throws IOException {
         if (appManager.getGebruiker().getStatus() == Status.MEDEWERKER) {
-            loadScherm("Boekenlijst (Medewerker).fxml", e);
+            sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("Boekenlijst (Medewerker).fxml")), e);
         }
-        else loadScherm("Boekenlijst (Klant).fxml", e);
+        else sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("Boekenlijst (Klant).fxml")), e);
     }
-    public void openBoekToevoegen(ActionEvent e) {
-        loadScherm("BoekToevoegen (Medewerker).fxml", e);
+    public void openBoekToevoegen(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("BoekToevoegen (Medewerker).fxml")), e);
     }
-    public void openGebruikerslijst(ActionEvent e) {
-        loadScherm("GebruikersLijst (Medewerker).fxml", e);
+    public void openGebruikerslijst(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("GebruikersLijst (Medewerker).fxml")), e);
     }
     public void selecteerAuteur() {
         if (!tbAuteurs.getText().contains(cbAuteurs.getSelectionModel().getSelectedItem().toString())) {
@@ -162,8 +160,8 @@ public class BoekController {
                 try {
                     tbTotAantal.setText(String.valueOf(boek.getBoekExemplaren().size()));
                     tbBeschikbaar.setText(String.valueOf(boek.getAantalBeschikbaar()));
-                } catch (Exception e) {
-                    System.out.println(e);
+                } catch (Exception ex) {
+                    logger.log( Level.WARNING, ex.toString(), ex);
                 }
             }
             for (Auteur auteur : boek.getAuteurs()) {
@@ -262,20 +260,6 @@ public class BoekController {
                 }
             });
         }
-    }
-    public void loadScherm(String path, ActionEvent e) {
-        try {
-            scherm = FXMLLoader.load(getClass().getResource(path));
-            showWindow(e);
-        } catch (Exception ex) {
-            logger.log( Level.WARNING, ex.toString(), ex);
-        }
-    }
-    public void showWindow(ActionEvent e){
-        Scene gebruikersscherm = new Scene(scherm);
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.setScene(gebruikersscherm);
-        stage.show();
     }
     public void showMessage(Kleur kleur, String message, int ms) {
         if (kleur == Kleur.RED) lblMessageBL.setTextFill(Color.RED);
@@ -476,17 +460,17 @@ public class BoekController {
         if (x == 8) votelsBeschikbareExemplaren = true;
         if (x == 9) votelsGeleendeBoeken = true;
 
-        if (btnToevoegenBoek != null) {
-            if (voteTitel && voteDescriptie && voteTotAantal && voteAuteurs && voteUitgever) btnToevoegenBoek.setDisable(false);
+        if (btnToevoegenBoek != null && voteTitel && voteDescriptie && voteTotAantal && voteAuteurs && voteUitgever) {
+            btnToevoegenBoek.setDisable(false);
         }
-        if (btnLeenUit != null) {
-            if (votelsGebruikersLijst && votelsBoekenLijst && votelsBeschikbareExemplaren) btnLeenUit.setDisable(false);
+        if (btnLeenUit != null && votelsGebruikersLijst && votelsBoekenLijst && votelsBeschikbareExemplaren) {
+            btnLeenUit.setDisable(false);
         }
-        if (btnRetourneer != null) {
-            if (votelsGebruikersLijst && votelsGeleendeBoeken) btnRetourneer.setDisable(false);
+        if (btnRetourneer != null && votelsGebruikersLijst && votelsGeleendeBoeken) {
+            btnRetourneer.setDisable(false);
         }
-        if (btnBeschrijvingWijzigen != null) {
-            if (votelsBeschikbareExemplaren) btnBeschrijvingWijzigen.setDisable(false);
+        if (btnBeschrijvingWijzigen != null && votelsBeschikbareExemplaren) {
+            btnBeschrijvingWijzigen.setDisable(false);
         }
     }
     public void disable(int x) {

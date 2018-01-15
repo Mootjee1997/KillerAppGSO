@@ -44,7 +44,7 @@ public class Server extends UnicastRemoteObject implements IServer {
                 publisher.registerProperty(BOEKADD);
                 publisher.registerProperty(GEBRUIKERADD);
                 publisher.registerProperty(MIJNBOEKEN);
-                System.out.println("server: bound and ready for use.");
+                logger.log( Level.INFO, "server: bound and ready for use.");
                 getAuteurs();
                 getUitgevers();
                 getGebruikers();
@@ -53,16 +53,16 @@ public class Server extends UnicastRemoteObject implements IServer {
             }
         }
         catch (Exception ex){
-            logger.log( Level.WARNING, ex.toString(), "server could not be bound.");
+            logger.log( Level.INFO,"server: already bound.");
         }
     }
     public Registry createRegistry() throws RemoteException {
         try {
             registry = LocateRegistry.createRegistry(port);
-            System.out.println("server: created Registry on portnumber: " + port + ".");
+            logger.log( Level.INFO, "server: created Registry on portnumber: 1099.");
         }
         catch (Exception ex) {
-            logger.log( Level.WARNING, ex.toString(), ex);
+            logger.log( Level.INFO, "Registry already created.");
         }
         return registry;
     }

@@ -2,18 +2,15 @@ package sample.unittests;
 import org.junit.Test;
 import sample.core.AppManager;
 import sample.models.*;
-
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import static org.junit.Assert.*;
 
 public class AppManagerTest {
-    private static final String KLANT = "klant";
-    private static final String MEDEWERKER = "BoekAdd";
+    private static final String KLANT = "Klant";
+    private static final String MEDEWERKER = "Medewerker";
     private static final String DEGRIEZELBUS = "De griezelbus";
     private Logger logger = Logger.getLogger("Logger");
     private AppManager appManager = AppManager.getInstance();
@@ -87,17 +84,6 @@ public class AppManagerTest {
     }
 
     @Test
-    public void addBoek() throws RemoteException {
-        ArrayList<Auteur> auteurs = new ArrayList<>();
-        Auteur auteur = new Auteur(new Gegevens("TestAuteur")); auteurs.add(auteur);
-        Uitgever uitgever = new Uitgever(new Gegevens("TestUitgever"));
-        Boek boek = new Boek("Titel", "Descriptie", auteurs, uitgever);
-        appManager.addBoek(boek, "1");
-
-        assertNotNull(appManager.zoekBoek(boek.getTitel()));
-    }
-
-    @Test
     public void zoekAuteur() throws RemoteException {
         assertNotNull(appManager.zoekAuteur("Paul van Loon"));
     }
@@ -157,7 +143,7 @@ public class AppManagerTest {
     @Test
     public void getBeschikbareExemplaren() throws RemoteException {
         List<String> list = appManager.getBeschikbareExemplaren(DEGRIEZELBUS);
-        assertTrue(list.contains("2"));
+        assertTrue(list.contains("1"));
     }
 
     @Test

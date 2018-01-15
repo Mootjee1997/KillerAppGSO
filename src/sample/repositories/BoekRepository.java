@@ -1,7 +1,6 @@
 package sample.repositories;
 import sample.contexts.IBoekContext;
 import sample.models.*;
-
 import java.util.List;
 
 public class BoekRepository {
@@ -12,11 +11,11 @@ public class BoekRepository {
     }
 
     public boolean leenUit(BoekExemplaar boek, Gebruiker gebruiker){
-        return context.leenUit(boek, gebruiker);
+        return context.beheerBoek(boek, gebruiker, "Leenuit");
     }
 
     public boolean retourneer(BoekExemplaar boek, Gebruiker gebruiker) {
-        return context.retourneer(boek, gebruiker);
+        return context.beheerBoek(boek, gebruiker, "Retourneer");
     }
 
     public boolean setBeschrijving(BoekExemplaar boekExemplaar) {

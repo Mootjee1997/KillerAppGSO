@@ -2,11 +2,9 @@ package sample.unittests;
 import org.junit.Test;
 import sample.enums.Status;
 import sample.models.*;
-
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import static org.junit.Assert.*;
 
 public class GebruikerTest {
@@ -98,11 +96,11 @@ public class GebruikerTest {
             auteurs.add(auteur);
             Uitgever uitgever = new Uitgever(new Gegevens("Uitgever2"));
             Boek boek = new Boek("Titel2", "Descriptie2", auteurs, uitgever);
-            BoekExemplaar boekExemplaar = new BoekExemplaar(1, boek, "Beschrijving2", true, 1);
-            gebruiker.addGeleendeBoek(boekExemplaar);
-            gebruiker.deleteGeleendeBoek(boekExemplaar.getVolgnummer());
+            BoekExemplaar b = new BoekExemplaar(1, boek, "Beschrijving2", true, 1);
+            gebruiker.addGeleendeBoek(b);
+            gebruiker.deleteGeleendeBoek(b.getVolgnummer());
 
-            assertFalse(gebruiker.getGeleendeBoeken().contains(boekExemplaar));
+            assertFalse(gebruiker.getGeleendeBoeken().contains(b));
         }
         catch (Exception ex) {
             logger.log( Level.WARNING, ex.toString(), ex);

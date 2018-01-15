@@ -18,35 +18,23 @@ public class IBoekContext {
     private ResultSet rs = null;
     private String query;
 
-    public boolean leenUit(BoekExemplaar boek, Gebruiker gebruiker) {
+    public boolean beheerBoek(BoekExemplaar boek, Gebruiker gebruiker, String type) {
         try {
-            query = "INSERT INTO `Gebruiker-Boekexemplaar` (GebruikerID, BoekID) VALUES (?, ?)";
+            String query2;
+            if (type.equals("Leenuit")) {
+                query = "INSERT INTO `Gebruiker-Boekexemplaar` (GebruikerID, BoekID) VALUES (?, ?)";
+                query2 = "UPDATE BoekExemplaar SET Beschikbaar = FALSE WHERE ID = ?";
+            }
+            else {
+                query = "DELETE FROM `Gebruiker-Boekexemplaar` WHERE GebruikerID = ? AND BoekID = ?";
+                query2 = "UPDATE BoekExemplaar SET Beschikbaar = TRUE WHERE ID = ?";
+            }
             PreparedStatement ps = db.getConnection().prepareStatement(query);
             ps.setInt(1, gebruiker.getId());
             ps.setInt(2, boek.getId());
             db.update(ps);
 
-            query = "UPDATE BoekExemplaar SET Beschikbaar = FALSE WHERE ID = ?";
-            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
-            ps1.setInt(1, boek.getId());
-            return db.update(ps1);
-        }
-        catch (Exception ex) {
-            logger.log( Level.WARNING, ex.toString(), ex);
-        }
-        return false;
-    }
-
-    public boolean retourneer(BoekExemplaar boek, Gebruiker gebruiker) {
-        try {
-            query = "DELETE FROM `Gebruiker-Boekexemplaar` WHERE GebruikerID = ? AND BoekID = ?";
-            PreparedStatement ps = db.getConnection().prepareStatement(query);
-            ps.setInt(1, gebruiker.getId());
-            ps.setInt(2, boek.getId());
-            db.update(ps);
-
-            query = "UPDATE BoekExemplaar SET Beschikbaar = TRUE WHERE ID = ?";
-            PreparedStatement ps1 = db.getConnection().prepareStatement(query);
+            PreparedStatement ps1 = db.getConnection().prepareStatement(query2);
             ps1.setInt(1, boek.getId());
             return db.update(ps1);
         }

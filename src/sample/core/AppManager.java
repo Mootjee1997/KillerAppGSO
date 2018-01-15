@@ -13,22 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AppManager extends UnicastRemoteObject implements IRemotePropertyListener, Serializable {
-    public void setBoekController(BoekController boekController) {
-        this.boekController = boekController;
-    }
-    private transient Logger logger = Logger.getLogger("Logger");
-    private static AppManager appManager = null;
-    public static AppManager getInstance() {
-        if (appManager == null) {
-            try {
-                appManager = new AppManager();
-            }
-            catch (Exception ex) {
-                System.out.println(ex);
-            }
-        }
-        return appManager;
-    }
     public AppManager() throws RemoteException {
         try {
             server = (IServer) Naming.lookup("rmi://localhost:1099/server");
@@ -40,9 +24,25 @@ public class AppManager extends UnicastRemoteObject implements IRemotePropertyLi
             logger.log( Level.WARNING, ex.toString(), ex);
         }
     }
+    public static AppManager getInstance() {
+        if (appManager == null) {
+            try {
+                appManager = new AppManager();
+            }
+            catch (Exception ex) {
+                logger.log( Level.WARNING, ex.toString(), ex);
+            }
+        }
+        return appManager;
+    }
+    private static transient Logger logger = Logger.getLogger("Logger");
+    private static AppManager appManager = null;
     private IServer server;
     private Gebruiker gebruiker;
     private BoekController boekController;
+    public void setBoekController(BoekController boekController) {
+        this.boekController = boekController;
+    }
 
     public Gebruiker login(String gebruikernaam, String wachtwoord) throws RemoteException {
         gebruiker = server.login(gebruikernaam, wachtwoord);
@@ -119,14 +119,16 @@ public class AppManager extends UnicastRemoteObject implements IRemotePropertyLi
 
     public void propertyChange(PropertyChangeEvent evt) {
         try {
-            if (evt.getPropertyName().equals("BoekAdd")) {
-                boekController.updateBoekList((List<String>) evt.getNewValue());
-            }
-            if (evt.getPropertyName().equals("GebruikerAdd")) {
-                boekController.updateGebruikersList((List<String>) evt.getNewValue());
-            }
-            if (evt.getPropertyName().equals("MijnBoeken")) {
-                boekController.updateMijnBoeken((List<String>) evt.getNewValue());
+            if (boekController != null) {
+                if (evt.getPropertyName().equals("BoekAdd")) {
+                    boekController.updateBoekList((List<String>) evt.getNewValue());
+                }
+                if (evt.getPropertyName().equals("GebruikerAdd")) {
+                    boekController.updateGebruikersList((List<String>) evt.getNewValue());
+                }
+                if (evt.getPropertyName().equals("MijnBoeken")) {
+                    boekController.updateMijnBoeken((List<String>) evt.getNewValue());
+                }
             }
         }
         catch (Exception ex) {

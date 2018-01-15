@@ -1,27 +1,26 @@
 package sample.javafx;
+import sample.core.SceneHandler;
 import sample.userproperties.UserProperties;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import sample.core.AppManager;
 import javafx.event.ActionEvent;
 import sample.enums.Kleur;
 import sample.enums.Status;
 import sample.models.Gebruiker;
 import sample.models.Gegevens;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GebruikerController {
+    private static final String MIJNPROFIELKLANT = "MijnProfiel (Klant).fxml";
+    private SceneHandler sceneHandler = new SceneHandler();
     private Logger logger = Logger.getLogger("Logger");
-    private Parent scherm;
     private AppManager appManager = AppManager.getInstance();
     private Gebruiker gebruiker = appManager.getGebruiker();
     private UserProperties props = new UserProperties();
@@ -48,16 +47,9 @@ public class GebruikerController {
 
     public boolean loginUser(String gebruikersnaam, String wachtwoord) {
         try {
-            if (appManager.login(gebruikersnaam, wachtwoord) != null)
-                if (appManager.getGebruiker().getStatus() == Status.MEDEWERKER) {
-                    scherm = FXMLLoader.load(getClass().getResource("MijnProfiel (Medewerker).fxml"));
-                    return true;
-                } else if (appManager.getGebruiker().getStatus() == Status.KLANT) {
-                    scherm = FXMLLoader.load(getClass().getResource("MijnProfiel (Klant).fxml"));
-                    return true;
-                }
-            return false;
-        } catch (Exception ex) {
+            return appManager.login(gebruikersnaam, wachtwoord) != null;
+        }
+        catch (Exception ex) {
             logger.log( Level.WARNING, ex.toString(), ex);
         }
         return false;
@@ -67,8 +59,12 @@ public class GebruikerController {
         try {
             if (!tbGebruikersnaam.getText().trim().equals("") && !tbWachtwoord.getText().trim().equals("")) {
                 if (loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText())) {
+                    if (appManager.getGebruiker().getStatus() == Status.MEDEWERKER) {
+                        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("MijnProfiel (Medewerker).fxml")), e);
+                    } else if (appManager.getGebruiker().getStatus() == Status.KLANT) {
+                        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource(MIJNPROFIELKLANT)), e);
+                    }
                     props.saveProperties(tbGebruikersnaam.getText(), cbOnthoudtGebruikersnaam.isSelected());
-                    showWindow(e);
                 } else showMessage(Kleur.RED, "Gebruikersnaam en/of wachtwoord komen niet overeen.", 4000);
             } else showMessage(Kleur.RED, "Vul alle benodigde velden in aub.", 4000);
         } catch (Exception ex) {
@@ -80,7 +76,7 @@ public class GebruikerController {
         try {
         appManager.registreer(new Gebruiker(tbGebruikersnaam.getText(), tbWachtwoord.getText(), new Gegevens(tbNaam.getText(), tbEmail.getText(), tbWoonplaats.getText(), tbTelefoonNr.getText())));
         loginUser(tbGebruikersnaam.getText(), tbWachtwoord.getText());
-        showWindow(e);
+            sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource(MIJNPROFIELKLANT)), e);
         }
         catch (Exception ex) {
             logger.log( Level.WARNING, ex.toString(), ex);
@@ -97,7 +93,8 @@ public class GebruikerController {
             showMessage(Kleur.GREEN, "Gegevens succesvol gewijzigd.", 4000);
             tbWachtwoord.setText("");
             tbPasswordVerif.setText("");
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.log( Level.WARNING, ex.toString(), ex);
         }
     }
@@ -119,49 +116,35 @@ public class GebruikerController {
             }
         }
     }
-    public void loguit(ActionEvent e) {
-        loadScherm("Hoofdscherm.fxml", e);
+    public void loguit(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("Hoofdscherm.fxml")), e);
     }
-    public void openregistreerScherm(ActionEvent e) {
-        loadScherm("Registreerscherm.fxml", e);
+    public void openregistreerScherm(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("Registreerscherm.fxml")), e);
     }
-    public void openReturnScherm(ActionEvent e) {
-        loadScherm("Hoofdscherm.fxml", e);
+    public void openReturnScherm(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("Hoofdscherm.fxml")), e);
     }
-    public void openMijnProfiel(ActionEvent e) {
+    public void openMijnProfiel(ActionEvent e) throws IOException {
         if (gebruiker.getStatus() == Status.MEDEWERKER) {
-            loadScherm("MijnProfiel (Medewerker).fxml", e);
+            sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("MijnProfiel (Medewerker).fxml")), e);
         }
-        else loadScherm("MijnProfiel (Klant).fxml", e);
+        else sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource(MIJNPROFIELKLANT)), e);
     }
-    public void openMijnBoeken(ActionEvent e) {
-        loadScherm("MijnBoeken (Klant).fxml", e);
+    public void openMijnBoeken(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("MijnBoeken (Klant).fxml")), e);
     }
-    public void openGebruikerslijst(ActionEvent e) {
-        loadScherm("GebruikersLijst (Medewerker).fxml", e);
+    public void openGebruikerslijst(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("GebruikersLijst (Medewerker).fxml")), e);
     }
-    public void openBoekenLijst(ActionEvent e) {
+    public void openBoekenLijst(ActionEvent e) throws IOException {
             if (appManager.getGebruiker().getStatus() == Status.MEDEWERKER) {
-                loadScherm("Boekenlijst (Medewerker).fxml", e);
+                sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("Boekenlijst (Medewerker).fxml")), e);
             }
-            else loadScherm("Boekenlijst (Klant).fxml", e);
+            else sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("Boekenlijst (Klant).fxml")), e);
     }
-    public void openBoekToevoegen(ActionEvent e) {
-        loadScherm("BoekToevoegen (Medewerker).fxml", e);
-    }
-    public void loadScherm(String path, ActionEvent e) {
-        try {
-            scherm = FXMLLoader.load(getClass().getResource(path));
-            showWindow(e);
-        } catch (Exception ex) {
-            logger.log( Level.WARNING, ex.toString(), ex);
-        }
-    }
-    public void showWindow(ActionEvent e) {
-        Scene gebruikersscherm = new Scene(scherm);
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.setScene(gebruikersscherm);
-        stage.show();
+    public void openBoekToevoegen(ActionEvent e) throws IOException {
+        sceneHandler.loadScherm(FXMLLoader.load(getClass().getResource("BoekToevoegen (Medewerker).fxml")), e);
     }
     public void showMessage(Kleur kleur, String message, int ms) {
         if (kleur == Kleur.RED) lblmessage.setTextFill(Color.RED);
@@ -304,11 +287,11 @@ public class GebruikerController {
         if (x == 4) voteEmail = true;
         if (x == 5) voteHuidigWachtwoord = true;
 
-        if (btnRegistreer != null) {
-            if (voteGebruikersnaam && voteWachtwoord && voteNaam && voteEmail) btnRegistreer.setDisable(false);
+        if (btnRegistreer != null && voteGebruikersnaam && voteWachtwoord && voteNaam && voteEmail) {
+            btnRegistreer.setDisable(false);
         }
-        if (btnProfielWijzigen != null) {
-            if (voteWachtwoord && voteNaam && voteEmail && voteHuidigWachtwoord) btnProfielWijzigen.setDisable(false);
+        if (btnProfielWijzigen != null && voteWachtwoord && voteNaam && voteEmail && voteHuidigWachtwoord) {
+            btnProfielWijzigen.setDisable(false);
         }
     }
     public void disable(int x) {
@@ -325,7 +308,7 @@ public class GebruikerController {
             btnProfielWijzigen.setDisable(true);
         }
     }
-    public GebruikerController() {
+    public GebruikerController() throws IOException {
         //Empty constructor
     }
 }

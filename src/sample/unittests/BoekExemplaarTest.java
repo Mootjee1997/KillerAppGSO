@@ -2,7 +2,6 @@ package sample.unittests;
 import org.junit.Test;
 import sample.models.*;
 import java.util.ArrayList;
-
 import static org.junit.Assert.*;
 
 public class BoekExemplaarTest {
@@ -50,10 +49,10 @@ public class BoekExemplaarTest {
         ArrayList<Auteur> auteurs1 = new ArrayList<>();
         Auteur auteur1 = new Auteur(new Gegevens("Auteur1")); auteurs1.add(auteur1);
         Uitgever uitgever1 = new Uitgever(new Gegevens("Uitgever1"));
-        Boek boek1 = new Boek("Titel1", "Descriptie1", auteurs1, uitgever1);
+        Boek boek1 = new Boek("Titel", "Descriptie1", auteurs1, uitgever1);
         boekExemplaar.setBoek(boek1);
 
-        assertEquals(boek, boekExemplaar.getBoek());
+        assertEquals(boek1, boekExemplaar.getBoek());
     }
 
     @Test

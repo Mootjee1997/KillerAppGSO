@@ -2,7 +2,6 @@ package sample.unittests;
 import org.junit.Test;
 import sample.models.*;
 import java.util.ArrayList;
-
 import static org.junit.Assert.*;
 
 public class BoekTest {
